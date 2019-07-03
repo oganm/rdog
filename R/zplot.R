@@ -4,6 +4,8 @@ plot.zdog = function(x,y,z = NULL,
                      size = 15,
                      xlabel = 'x',
                      ylabel = 'y',
+                     rotate.x= 0,
+                     rotate.y = 0,
                      id = NULL,
                      class = NULL,
                      margin = 20,
@@ -89,6 +91,8 @@ plot.zdog = function(x,y,z = NULL,
                                });",.open = '<',.close = '>')),
         htmltools::tags$script(glue::glue('
                                           function animate(){
+                                            <id>.rotate.x += <rotate.x>;
+                                            <id>.rotate.y += <rotate.y>
                                             <id>.updateRenderGraph();
                                             requestAnimationFrame( animate );
                                           };
