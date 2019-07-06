@@ -9,6 +9,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     htmltools,
-    ogbox
+    ogbox,
+    assertthat
 Remotes:
     oganm/ogbox

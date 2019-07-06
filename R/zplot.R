@@ -1,3 +1,4 @@
+#' @export
 plot.zdog = function(x,y,z = NULL,
                      color = NULL,
                      split = NULL,
@@ -48,7 +49,9 @@ plot.zdog = function(x,y,z = NULL,
 
 
     script = glue::glue(
-        "let <id> = new Zdog.Illustration({
+        "
+        Zfont.init(Zdog)
+        let <id> = new Zdog.Illustration({
             element: '#<id>',
              dragRotate: true
         });",
@@ -119,11 +122,11 @@ plot.zdog = function(x,y,z = NULL,
     out = htmltools::tagList(out)
 
 
-    class(out) = append('rdog',class(out))
+    class(out) = append('rdogPlot',class(out))
     return(out)
 }
 
-print.rdog = function(x, ...){
+print.rdogPlot = function(x, ...){
     htmltools::html_print(x,...)
 }
 
