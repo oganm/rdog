@@ -94,25 +94,21 @@ illustration = function(id,
     out = htmltools::tagList(
         dependency,
         canvas,
-        illustration
+        htmltools::tags$script(illustration)
     )
 
-    if(dragRotate){
-        renderCode =
-            htmltools::tags$script(glue::glue('
-                                          function animate(){
-                                            <id>.updateRenderGraph();
-                                            requestAnimationFrame( animate );
-                                          };
-                                          animate();',.open = '<',.close = '>'))
-    } else{
-        renderCode = renderCode =
-            htmltools::tags$script(glue::glue('<id>.updateRenderGraph();',.open = '<',.close = '>'))
-    }
-
-    output =
-        list(objects = out,
-         renderCode = renderCode)
+    attributes(out) = c(attributes(out),
+                        list(id = id))
 
     class(out) = append('rdog',class(out))
+    return(out)
 }
+
+
+save_canvas = function(rdog,filename){
+    atr = attributes(rdog)
+    glue::glue(
+        '',
+        .open = '<',.close = '>')
+}
+
