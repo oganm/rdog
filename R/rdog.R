@@ -1,7 +1,11 @@
+#' @export
+tau = 2*pi
+
 #' Create a zdog ilssutration
 #'
 #' @param id Id of the object that will be used for the illustration
-#' @param class class of the object. By default it's just set to ID. change
+#' @param class class of the canvas. By default it's just set to ID. change
+#' @param canvasID id of the canvas where the shapes will be drawn.
 #' if you want to modify it further with CSS
 #' @param width,height width and height of the canvas in pixels
 #' @background background color
@@ -23,8 +27,9 @@
 #'
 #' @return An empty zdog illustration.
 #' @export
-illustration = function(id,
+illustration = function(id = NULL,
                         class = id,
+                        canvasID = id,
                         width = 240,
                         height = 240,
                         background = '#FFDDBB',
@@ -43,10 +48,16 @@ illustration = function(id,
         'zdog',
         src = system.file('zdog',package = 'rdog'),
         version = '1.0',
-        script = 'zdog.min.js'
+        script = c('zdog.min.js','zfont.min.js')
     )
 
-    canvas = htmltools::tags$canvas(id = id, class = class,width=width, height = height, style = glue::glue("background:{background}"))
+    if(is.null(id)){
+        id = basename(tempfile(pattern = 'id'))
+    }
+
+
+
+    canvas = htmltools::tags$canvas(id = canvasID, class = class,width=width, height = height, style = glue::glue("background:{background}"))
 
     assertthat::assert_that(is.logical(dragRotate) | is.character(dragRotate))
     if(is.logical(dragRotate)){
@@ -71,8 +82,10 @@ illustration = function(id,
     }
 
     illustration = glue::glue(
-        "let <id> = new Zdog.Illustration({
-            element: '#<id>',
+        "
+        Zfont.init(Zdog);
+        <id> = new Zdog.Illustration({
+            element: '#<canvasID>',
             dragRotate: true,
             centered: <tolower(centered)>,
             zoom: <zoom>,
@@ -101,14 +114,10 @@ illustration = function(id,
                         list(id = id))
 
     class(out) = append('rdog',class(out))
+
+
     return(out)
 }
 
 
-save_canvas = function(rdog,filename){
-    atr = attributes(rdog)
-    glue::glue(
-        '',
-        .open = '<',.close = '>')
-}
 

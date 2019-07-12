@@ -10,6 +10,9 @@ LazyData: true
 Imports:
     htmltools,
     ogbox,
-    assertthat
+    assertthat,
+    magrittr,
+    shinyjs
 Remotes:
     oganm/ogbox
+RoxygenNote: 6.1.1
