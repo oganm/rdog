@@ -13,11 +13,11 @@ animation_none = function(rdog = NULL,id = NULL){
     }
 
     animationScript = glue::glue(
-        'function animate_<id>(){
-        <parentAttributes$id>.updateRenderGraph();
-        requestAnimationFrame( animate_<id> );
+        'function animate_<gsub("\\\\.","",id)>(){
+        <id>.updateRenderGraph();
+        requestAnimationFrame( animate_<gsub("\\\\.","",id)> );
         }
-        animate_<id>()',
+        animate_<gsub("\\\\.","",id)>()',
         .open = '<',.close = '>'
     )
 
