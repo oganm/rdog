@@ -93,3 +93,47 @@ print.rdog = function(rdog, ...){
 
     htmltools::html_print(toPrint)
 }
+
+#' @export
+record_gif = function(rdog,file = NULL, fps = 10, duration = 3){
+
+    www_dir <- tempfile("viewhtml")
+    dir.create(www_dir)
+    index_html <- file.path(www_dir, "index.html")
+    htmltools::save_html(rdog, file = index_html, background = 'white',
+              libdir = "lib")
+
+    imageDir = tempfile()
+    dir.create(imageDir)
+
+    frames = seq(from = 0 , to = duration, by = 1/fps)
+
+    for(i in seq_along(frames)){
+        a = FALSE
+        while(!a){
+            a = tryCatch({
+                suppressMessages(
+                webshot(paste0('file://',index_html),
+                                  file = glue::glue('{imageDir}/{i}.png'),
+                                  selector = glue::glue('.{attributes(rdog)$id}'),
+                                  delay = frames[i])
+                )
+                TRUE
+            }, error = function(e){
+                FALSE
+            })
+        }
+    }
+
+    images = paste0(imageDir,'/',seq_along(frames),'.png')
+
+    animation = images %>% lapply(magick::image_read) %>% do.call(c,.) %>%
+        magick::image_animate(fps = fps)
+
+    if(!is.null(file)){
+        magick::image_write(animation,file)
+    }
+
+    return(animation)
+
+}

@@ -1,14 +1,3 @@
-zfont_text = function(zdog,
-                      text,
-                      font = system.file('fonts/Roboto-Regular.ttf',package = 'rdog')){
-
-    fontPath = basename(font)
-    fontName = basename()
-
-    shiny::addResourcePath('zfonts',directoryPath = )
-
-}
-
 
 zfont_font = function(rdog = NULL,
                       id,
@@ -21,7 +10,7 @@ zfont_font = function(rdog = NULL,
 
     fullString = glue::glue(
         'let <id> = new Zdog.Font({
-            src: document.getElementById("<id>-1-attachment").href
+            src: document.getElementById("<id>-attachment").href
         })',
         .close = '>',.open = '<'
     )
@@ -29,7 +18,11 @@ zfont_font = function(rdog = NULL,
     parentAttributes = attributes(rdog)
 
     out = htmltools::tagList(rdog,
-                             htmltools::htmlDependency(name = id,version = '1.0',src = fontPath,attachment = fontName),
+                             htmltools::tags$link(href =
+                                                      paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font)),
+                                                  id = glue::glue('{id}-attachment'),
+                                                  rel = 'attachment'),
+                             # htmltools::htmlDependency(name = id,version = '1.0',src = fontPath,attachment = fontName),
                              htmltools::tags$script(fullString))
 
     newAttributes = c(parentAttributes,

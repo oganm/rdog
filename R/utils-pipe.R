@@ -9,3 +9,7 @@
 #' @importFrom magrittr %>%
 #' @usage lhs \%>\% rhs
 NULL
+
+
+#' @importFrom webshot2 webshot
+webshot2::webshot

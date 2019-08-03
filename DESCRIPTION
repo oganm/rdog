@@ -12,7 +12,10 @@ Imports:
     ogbox,
     assertthat,
     magrittr,
-    shinyjs
+    shinyjs,
+    webshot2,
+    magick
 Remotes:
-    oganm/ogbox
+    oganm/ogbox,
+    rstudio/webshot2
 RoxygenNote: 6.1.1
