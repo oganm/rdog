@@ -28,7 +28,7 @@ illustration('illo',dragRotate = TRUE) %>%
                textAlign = 'center',stroke = 4,translate = c(y = 110)) %>%
     # animation_none()
     animation_rotate(rotate = c(y = .05)) %>% 
-    record_gif(fps = 10, duration = 4)
+    record_gif(fps = 10, duration = 4,file = 'README_files/rotate.gif')
 ```
 
     ## Registered S3 method overwritten by 'shiny':
@@ -36,6 +36,8 @@ illustration('illo',dragRotate = TRUE) %>%
     ##   print.key_missing fastmap
 
 ![](README_files/figure-gfm/basic-1.gif)<!-- -->
+
+![](README_files/rotate.gif)
 
 `record_gif` is not required for interactive usage. By default, the
 output is a tagList, that can be automatically displayed in the viewer.
