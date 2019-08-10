@@ -17,7 +17,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
    observe({
-        illustration(id = 'window.canv',canvasID = 'thecanvas',resize = FALSE) %>%
+        illustration(id = 'canv',canvasID = 'thecanvas',resize = FALSE) %>%
             shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE) %>%
             animation_none() %>%
             make_shiny()

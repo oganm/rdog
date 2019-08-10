@@ -111,7 +111,10 @@ illustration = function(id = NULL,
     )
 
     attributes(out) = c(attributes(out),
-                        list(id = id))
+                        list(id = id,
+                             height = height,
+                             width = width,
+                             background = background))
 
     class(out) = append('rdog',class(out))
 

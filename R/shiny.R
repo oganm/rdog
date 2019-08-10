@@ -5,7 +5,6 @@ make_shiny = function(rdog){
         {.[[1]]} %>%
         paste(collapse = '\n') ->jsCode
 
-    browser()
 
     # fixerCode =
     #     glue::glue(
