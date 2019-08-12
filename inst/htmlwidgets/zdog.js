@@ -28,13 +28,18 @@ HTMLWidgets.widget({
           document.getElementById(el.id).removeChild(document.getElementById(el.id).firstElementChild);
         }
 
-        x.fonts.forEach(function(element){
-          console.log(element.id);
-          let font = document.createElement('link');
-          font.href = element.font;
-          font.id = element.id + '-attachment';
-          document.getElementById(el.id).appendChild(font);
-        });
+
+        if(x.fonts !== null){
+          x.fonts.forEach(function(element){
+            console.log(element.id);
+            let font = document.createElement('link');
+            font.href = element.font;
+            font.id = element.id + '-attachment';
+            document.getElementById(el.id).appendChild(font);
+          });
+        }
+
+
 
 
 
