@@ -25,13 +25,23 @@ zfont_font = function(rdog = NULL,
                              # htmltools::htmlDependency(name = id,version = '1.0',src = fontPath,attachment = fontName),
                              htmltools::tags$script(fullString))
 
-    newAttributes = c(parentAttributes,
-                      list(font = list(
-                          what = 'font',
-                          id = id
-                      )))
+    fontList = list(list(
+        id = id,
+        font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
+    ))
+    names(fontList) = id
 
-    attributes(out) = newAttributes
+    parentAttributes$fonts = c(parentAttributes$fonts,
+                               fontList)
+
+    # newAttributes = c(parentAttributes,
+    #                   list(font = list(
+    #                       what = 'font',
+    #                       id = id,
+    #                       font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
+    #                   )))
+
+    attributes(out) = parentAttributes
     return(out)
 }
 

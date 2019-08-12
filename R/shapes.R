@@ -6,7 +6,7 @@
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param diameter Diameter of the circle
 #' @param width,height Width and height of the ellipse. Overrides diameter
-#' @quarters How many quarters should be drawn. 4 draws a whole circle, 2
+#' @param quarters How many quarters should be drawn. 4 draws a whole circle, 2
 #' is a semi circle etc.
 #' @inheritParams shape
 #' @inheritParams anchor

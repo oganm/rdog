@@ -14,7 +14,10 @@ Imports:
     magrittr,
     shinyjs,
     webshot2,
-    magick
+    magick,
+    base64enc,
+    htmlwidgets,
+    purrr
 Remotes:
     oganm/ogbox,
     rstudio/webshot2

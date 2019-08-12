@@ -1,5 +1,12 @@
-rdog
-================
+---
+title: "rdog"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+devtools::load_all()
+```
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.
@@ -19,7 +26,7 @@ viewer. Some elements appears to misbehave in older versions.
 
 ## Basic usage
 
-``` r
+``` {r}
 illustration('illo',dragRotate = TRUE) %>% 
         shape_rect(width = 50, height = 50,stroke = 20, fill = FALSE,rotate = c(z=tau/8)) %>% 
     shape_ellipse(id = 'hede',color = 'red',stroke = 20,width = 120,height = 120,fill = FALSE) %>%
@@ -31,27 +38,18 @@ illustration('illo',dragRotate = TRUE) %>%
     record_gif(duration = 4)
 ```
 
-    ## Registered S3 method overwritten by 'shiny':
-    ##   method            from   
-    ##   print.key_missing fastmap
 
-    ## .........................................
-
-![](README_files/figure-gfm/unnamed-chunk-1-1.gif)<!-- -->
-
-`record_gif` is not required for interactive usage or html renderings.
-By default, the output is a tagList, that can be automatically displayed
-in the viewer. This doesn’t work with github\_document’s due to
-restrictions on github so rendering into a gif is necesary.
+`record_gif` is not required for interactive usage or html renderings. By default, the
+output is a tagList, that can be automatically displayed in the viewer. This doesn't work
+with github_document's due to restrictions on github so rendering into a gif is necesary.
 
 ## Use in shiny
 
-WIP. Syntax below is subject to change since it depends on the
-`rdog_widget` function. Currently looking for a way to get rid of that.
-Also the current version has a bug that causes animations to speed up
-whenever there’s a change…
+WIP. Syntax below is subject to change since it depends on the `rdog_widget` function. Currently
+looking for a way to get rid of that. Also the current version has a bug that causes animations
+to speed up whenever there's a change...
 
-``` r
+```r
 library(shiny)
 library(rdog)
 ui <- fluidPage(

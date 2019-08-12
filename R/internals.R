@@ -87,7 +87,8 @@ process_coord_vector = function(vector,default = 0, allowSingle = FALSE){
 
 #' @export
 print.rdog = function(rdog, ...){
-    toPrint = htmltools::tagList(rdog,
+    toPrint = htmltools::tagList(# htmltools::tags$script('Zfont.init(Zdog);'),
+                                 rdog,
                                  htmltools::tags$script(glue::glue('{attributes(rdog)$id}.updateRenderGraph();')))
 
 

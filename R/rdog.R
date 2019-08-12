@@ -8,7 +8,7 @@ tau = 2*pi
 #' @param canvasID id of the canvas where the shapes will be drawn.
 #' if you want to modify it further with CSS
 #' @param width,height width and height of the canvas in pixels
-#' @background background color
+#' @param background background color
 #' @param dragRotate enable drag rotation on the canvas. Could also be the
 #' name of an object three for which the rotation will be enabled.
 #' @param centered If TRUE, the x = 0, y = 0 will be the center of the figure,
@@ -46,9 +46,9 @@ illustration = function(id = NULL,
 
     dependency = htmltools::htmlDependency(
         'zdog',
-        src = system.file('zdog',package = 'rdog'),
+        src = system.file('htmlwidgets/lib/zdog-1.0.2',package = 'rdog'),
         version = '1.0',
-        script = c('zdog.min.js','zfont.min.js')
+        script = c('zdog.min.js','zfont.min.js','zfontInit.js')
     )
 
     if(is.null(id)){
@@ -83,7 +83,6 @@ illustration = function(id = NULL,
 
     illustration = glue::glue(
         "
-        Zfont.init(Zdog);
         <id> = new Zdog.Illustration({
             element: '#<canvasID>',
             dragRotate: true,
@@ -112,6 +111,7 @@ illustration = function(id = NULL,
 
     attributes(out) = c(attributes(out),
                         list(id = id,
+                             canvasID = canvasID,
                              height = height,
                              width = width,
                              background = background))

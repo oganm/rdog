@@ -1,0 +1,8 @@
+dependencies:
+  - name: zdog
+    version: 1.0.2
+    src: htmlwidgets/lib/zdog-1.0.2
+    script:
+      - zdog.min.js
+      - zfont.min.js
+      - zfontInit.js
