@@ -17,13 +17,19 @@ ui <- fluidPage(
 server <- function(input, output) {
     output$dogy = renderRdog({
         illustration('illo',dragRotate = TRUE) %>%
-            shape_rect(width = 50, height = 50,stroke = input$slider, fill = FALSE,rotate = c(z=tau/8)) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE) %>%
+            shape_rect(id = 'rect',width = 50, height = 50,stroke = input$slider, fill = FALSE,rotate = c(z=tau/8)) %>%
+            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE,quarters = 1,closed = FALSE) %>%
+            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=pi/2),fill = FALSE,quarters = 1,closed = FALSE) %>%
+            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=-pi/2),fill = FALSE,quarters = 1,closed = FALSE) %>%
+            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=pi),fill = FALSE,quarters = 1,closed = FALSE) %>%
+            # shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE,quarters = 4,closed = FALSE) %>%
+
             zfont_font(id = 'font') %>%
             zfont_text(zfont = 'font',text = 'Text',fontSize = 50,
                        textAlign = 'center',stroke = 4,translate = c(y = 110)) %>%
             # animation_none()
-            animation_rotate(rotate = c(y = .05)) %>%
+            animation_rotate(id = 'rotAnim',addTo = 'rect',rotate = c(y=.025)) %>%
+            animation_rotate(id = 'rotAnim2',addTo = NULL,rotate = c(y = .025)) %>%
             rdog_widget()
 
     })

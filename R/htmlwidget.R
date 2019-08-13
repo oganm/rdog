@@ -9,7 +9,10 @@ rdog_widget <- function(rdog, height = NULL, width = NULL) {
         paste(collapse = '\n') ->jsCode
 
 
+
     rdogAttr = attributes(rdog)
+
+    jsCode = rdogAttr$js
 
     fonts = rdogAttr[rdogAttr %>% purrr::map_lgl(function(x){
         x['what'] == 'font'
@@ -21,6 +24,7 @@ rdog_widget <- function(rdog, height = NULL, width = NULL) {
         rdog = rdog,
         jsCode = jsCode,
         canvasID = rdogAttr$canvasID,
+        illId = rdogAttr$id,
         width = rdogAttr$width,
         height = rdogAttr$height,
         background = rdogAttr$background,

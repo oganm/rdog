@@ -6,3 +6,4 @@ dependencies:
       - zdog.min.js
       - zfont.min.js
       - zfontInit.js
+      - rdog_variables.js

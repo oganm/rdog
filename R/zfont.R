@@ -9,7 +9,7 @@ zfont_font = function(rdog = NULL,
     parentAttributes = attributes(rdog)
 
     fullString = glue::glue(
-        'let <id> = new Zdog.Font({
+        'Rdog_variables.fonts.<id> = new Zdog.Font({
             src: document.getElementById("<id>-attachment").href
         })',
         .close = '>',.open = '<'
@@ -30,6 +30,9 @@ zfont_font = function(rdog = NULL,
         font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
     ))
     names(fontList) = id
+
+    parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
+
 
     parentAttributes$fonts = c(parentAttributes$fonts,
                                fontList)
@@ -95,7 +98,7 @@ zfont_text = function(rdog = NULL,
 
     selfString = glue::glue(
         'value: "<text>",
-        font: <zfont>,
+        font: Rdog_variables.fonts.<zfont>,
         fontSize: <fontSize>,
         textAlign: "<textAlign>",
         textBaseline: "<textBaseline>"',
@@ -103,7 +106,7 @@ zfont_text = function(rdog = NULL,
     )
 
     fullString = glue::glue(
-        'let <id> = new Zdog.Text({
+        'Rdog_variables.fonts.<id> = new Zdog.Text({
             <selfString>,
             <shapeString>,
             <anchorString>
@@ -114,6 +117,8 @@ zfont_text = function(rdog = NULL,
     parentAttributes = attributes(rdog)
     out = htmltools::tagList(rdog,
                              htmltools::tags$script(fullString))
+
+    parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
 
     newAttributes = c(parentAttributes,
                       list(text = list(

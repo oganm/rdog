@@ -72,7 +72,7 @@ shape_ellipse = function(rdog = NULL,
 
 
     fullString = glue::glue(
-        'let <id> = new Zdog.Ellipse({
+        '<id> = new Zdog.Ellipse({
             <selfString>,
             <shapeString>,
             <anchorString>
@@ -85,6 +85,9 @@ shape_ellipse = function(rdog = NULL,
 
         out = htmltools::tagList(rdog,
                                  htmltools::tags$script(fullString))
+
+        parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
+
 
         newAttributes = c(parentAttributes,
                           list(ellipse = list(
@@ -167,7 +170,7 @@ shape_rect = function(
     )
 
     fullString = glue::glue(
-        'let <id> = new Zdog.Rect({
+        '<id> = new Zdog.Rect({
             <selfString>,
             <shapeString>,
             <anchorString>
@@ -183,9 +186,8 @@ shape_rect = function(
     out = htmltools::tagList(rdog,
                              htmltools::tags$script(fullString))
 
-    if(shiny::isRunning()){
-        shinyjs::runjs(fullString)
-    }
+
+    parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
 
     newAttributes = c(parentAttributes,
                       list(rect = list(

@@ -46,8 +46,7 @@ with github_document's due to restrictions on github so rendering into a gif is 
 ## Use in shiny
 
 WIP. Syntax below is subject to change since it depends on the `rdog_widget` function. Currently
-looking for a way to get rid of that. Also the current version has a bug that causes animations
-to speed up whenever there's a change...
+looking for a way to get rid of that.
 
 ```r
 library(shiny)

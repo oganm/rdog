@@ -39,7 +39,7 @@ illustration = function(id = NULL,
                         scale = 1,
                         translate = c(x = 0, y = 0, z = 0),
                         rotate = c(x = 0, y = 0, z = 0),
-                        resize = TRUE,
+                        resize = FALSE,
                         onResize = NULL,
                         onPrerender = NULL,
                         onDragStart = NULL){
@@ -48,7 +48,7 @@ illustration = function(id = NULL,
         'zdog',
         src = system.file('htmlwidgets/lib/zdog-1.0.2',package = 'rdog'),
         version = '1.0',
-        script = c('zdog.min.js','zfont.min.js','zfontInit.js')
+        script = c('zdog.min.js','zfont.min.js','zfontInit.js','rdog_variables.js')
     )
 
     if(is.null(id)){
@@ -85,7 +85,7 @@ illustration = function(id = NULL,
         "
         <id> = new Zdog.Illustration({
             element: '#<canvasID>',
-            dragRotate: true,
+            dragRotate: <tolower(dragRotate)>,
             centered: <tolower(centered)>,
             zoom: <zoom>,
             scale: <scale>,
@@ -114,7 +114,8 @@ illustration = function(id = NULL,
                              canvasID = canvasID,
                              height = height,
                              width = width,
-                             background = background))
+                             background = background,
+                             js = illustration))
 
     class(out) = append('rdog',class(out))
 

@@ -9,9 +9,15 @@ HTMLWidgets.widget({
 
     return {
       renderValue: function(x) {
-        console.log('something');
-        console.log(x.canvasID)
+        console.log("we're in");
+        console.log(x.canvasID);
         window.debugX=  x;
+        console.log('stopAnimation_' + x.illId in window);
+        if('stopAnimation_' + x.illId in window){
+          console.log('stopping animation');
+          eval('window.stopAnimation_' + x.illId + '=true')
+          console.log(eval('window.stopAnimation_' + x.illId))
+        }
 
         var canv = document.createElement('canvas');
         canv.id = x.canvasID;

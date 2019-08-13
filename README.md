@@ -31,11 +31,7 @@ illustration('illo',dragRotate = TRUE) %>%
     record_gif(duration = 4)
 ```
 
-    ## Registered S3 method overwritten by 'shiny':
-    ##   method            from   
-    ##   print.key_missing fastmap
-
-    ## .........................................
+    ## ..........................................
 
 ![](README_files/figure-gfm/unnamed-chunk-1-1.gif)<!-- -->
 
@@ -48,8 +44,6 @@ restrictions on github so rendering into a gif is necesary.
 
 WIP. Syntax below is subject to change since it depends on the
 `rdog_widget` function. Currently looking for a way to get rid of that.
-Also the current version has a bug that causes animations to speed up
-whenever there’s a change…
 
 ``` r
 library(shiny)
