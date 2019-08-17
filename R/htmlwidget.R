@@ -2,14 +2,6 @@
 #' @export
 rdog_widget <- function(rdog, height = NULL, width = NULL) {
 
-    rdog %>%
-        as.character %>%
-        stringr::str_extract_all('(?<=<script>)(.|\n)*?(?=</script>)') %>%
-        {.[[1]]} %>%
-        paste(collapse = '\n') ->jsCode
-
-
-
     rdogAttr = attributes(rdog)
 
     jsCode = rdogAttr$js
@@ -32,7 +24,11 @@ rdog_widget <- function(rdog, height = NULL, width = NULL) {
     )
 
     # create the widget
-    htmlwidgets::createWidget("zdog", x, width = width, height = height, package='rdog')
+    htmlwidgets::createWidget("zdog", x, width = width, height = height, package='rdog',
+                              sizingPolicy = htmlwidgets::sizingPolicy(
+                                  padding = 0,
+                                  viewer.padding = 0
+                              ))
 }
 
 

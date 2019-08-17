@@ -8,33 +8,42 @@
 #
 
 library(shiny)
-library(rdog)
+devtools::load_all()
 ui <- fluidPage(
-    shiny::sliderInput(min = 0, max = 100, inputId = 'slider',label = '',value = 20),
+    shiny::sliderInput(min = 0, max = 140, inputId = 'slider',label = '',value = 80),
     rdogOutput('dogy',height = 240,width = 240)
 )
 
 server <- function(input, output) {
     output$dogy = renderRdog({
-        illustration('illo',dragRotate = TRUE) %>%
-            shape_rect(id = 'rect',width = 50, height = 50,stroke = input$slider, fill = FALSE,rotate = c(z=tau/8)) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE,quarters = 1,closed = FALSE) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=pi/2),fill = FALSE,quarters = 1,closed = FALSE) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=-pi/2),fill = FALSE,quarters = 1,closed = FALSE) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,rotate = c(z=pi),fill = FALSE,quarters = 1,closed = FALSE) %>%
-            # shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE,quarters = 4,closed = FALSE) %>%
-
+        illustration('illo',width = 250,height = 250) %>%
+            shape_box(id ='cornell',
+                      width = 150,
+                      height = 150,
+                      depth = 150,
+                      translate = c(y = '-20'),
+                      rotate = c(x = -tau/20,y = tau/16),
+                      stroke = 1,
+                      color = '#C25',
+                      leftFace = 'red',
+                      rightFace =  'green',
+                      topFace =  'white',
+                      bottomFace =  'white',
+                      frontFace =  FALSE,
+                      rearFace= 'lightgray') %>%
+            shape_ellipse(
+                addTo = 'cornell',
+                id = "ellipse",
+                diameter = input$slider,
+                stroke = 20,
+                color = '#636',fill = FALSE
+            ) %>%
             zfont_font(id = 'font') %>%
-            zfont_text(zfont = 'font',text = 'Text',fontSize = 50,
-                       textAlign = 'center',stroke = 4,translate = c(y = 110)) %>%
-            # animation_none()
-            animation_rotate(id = 'rotAnim',addTo = 'rect',rotate = c(y=.025)) %>%
-            animation_rotate(id = 'rotAnim2',addTo = NULL,rotate = c(y = .025)) %>%
-            rdog_widget()
-
+            zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center')  %>%
+            # animation_rotate(addTo = 'ellipse',id = 'rotate',rotate = c(y = 0.05)) %>%
+            animation_ease_in(id = 'ease',radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
     })
 
 }
 
-# Run the application
 shinyApp(ui = ui, server = server)

@@ -6,49 +6,30 @@
 #' @export
 animation_none = function(rdog = NULL,id = NULL, addTo = NULL){
 
-    parentAttributes = attributes(rdog)
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 
-    if(is.null(addTo) && !is.null(rdog)){
-        addTo = parentAttributes$id
-    } else if(is.null(addTo) && is.null(rdog)){
-        stop('Both addTo and rdog is left blank')
-    }
-
-    if(is.null(id)){
-        id = basename(tempfile(pattern = 'id'))
+    if(is.character(rdog)){
+        illoId = rdog
+    } else if('zdog' %in% class(rdog)){
+        illoId = rdog$x$illId
     }
 
     animationScript = glue::glue(
         '
-        Rdog_variables.animFuns.animate_<id> = function(){
-
-        <parentAttributes$id>.updateRenderGraph();
-        requestAnimationFrame( Rdog_variables.animFuns.animate_<id> );
-        }
-        Rdog_variables.animFuns.animate_<id>()',
-        .open = '<',.close = '>'
-    )
-
-    out = htmltools::tagList(rdog,
-                             htmltools::tags$script(animationScript))
-
-    parentAttributes$js = paste0(parentAttributes$js,'\n',animationScript)
+        Rdog_variables.built_in.animation_none("<id>","<addTo>","<illoId>");
+        ',.open = '<',.close = '>')
 
 
-    newAttributes = c(parentAttributes,
-                      animation = 'none')
-    attributes(out) = newAttributes
+    if(!is.null(rdog)){
 
-    return(out)
+        rdog$x$jsCode %<>% paste0('\n',animationScript)
+        return(rdog)
+    } else {
+        animationScript
+    }
 
 }
 
-#' Custom animation
-#'
-#' Use your own javascript code to animate
-animation_custom = function(rdog, customJS,...){
-
-}
 
 #' @export
 animation_rotate = function(rdog = NULL,
@@ -56,60 +37,52 @@ animation_rotate = function(rdog = NULL,
                             addTo = NULL,
                             rotate = c(x = 0, y = 0, z = 0)){
 
-    parentAttributes = attributes(rdog)
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 
-    if(is.null(addTo) && !is.null(rdog)){
-        addTo = parentAttributes$id
-    } else if(is.null(addTo) && is.null(rdog)){
-        stop('Both addTo and rdog is left blank')
-    }
-
-    if(is.null(id)){
-        id = basename(tempfile(pattern = 'id'))
-    }
 
     coords = c('x','y','z')
     rotate[coords[!coords %in% names(rotate)]] = 0
 
     animationScript = glue::glue(
         '
-        if(Rdog_variables.animations.animate_<id> == undefined){
-            Rdog_variables.animations.animate_<id> = 1
-        } else{
-           Rdog_variables.animations.animate_<id> += 1
-        }
+        Rdog_variables.built_in.animation_rotate("<id>","<addTo>","<illoId>",<rotate["x"]>,<rotate["y"]>,<rotate["z"]>);
+        ',.open = '<',.close = '>')
 
 
-        Rdog_variables.animFuns.animate_<id> = function(){
+    if(!is.null(rdog)){
 
-        if(Rdog_variables.animations.animate_<id> > 1){
-            console.log("stopping <id> animation"
-            )
-            Rdog_variables.animations.animate_<id> -=1
-            return;
-        }
-
-
-        <addTo>.rotate.x += <rotate["x"]>;
-        <addTo>.rotate.y += <rotate["y"]>;
-        <addTo>.rotate.z += <rotate["z"]>;
-        <parentAttributes$id>.updateRenderGraph();
-        requestAnimationFrame( Rdog_variables.animFuns.animate_<id> );
-        }
-        Rdog_variables.animFuns.animate_<id>()',
-        .open = '<',.close = '>'
-    )
-
-    out = htmltools::tagList(rdog,
-                             htmltools::tags$script(htmltools::HTML(animationScript)))
-
-    parentAttributes$js = paste0(parentAttributes$js,'\n',animationScript)
-
-
-    newAttributes = c(parentAttributes,
-                      animation = 'rotate')
-    attributes(out) = newAttributes
-
-    return(out)
+        rdog$x$jsCode %<>% paste0('\n',animationScript)
+        return(rdog)
+    } else {
+        animationScript
+    }
 }
 
+#' @export
+animation_ease_in = function(rdog,
+                             id,
+                             addTo,
+                             framesPerCycle = 150,
+                             radiansPerCycle = tau,
+                             rotateAxis = 'y',
+                             power = 2
+                             ){
+
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
+
+    if(is.null(id)){
+        id = basename(tempfile(pattern = 'id'))
+    }
+
+    animationScript = glue::glue(
+        '
+        Rdog_variables.built_in.animation_ease_in("<id>","<addTo>","<illoId>",<framesPerCycle>,<radiansPerCycle>,"<rotateAxis>",<power>);
+        ',.open = '<',.close = '>')
+
+    if(!is.null(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',animationScript)
+        return(rdog)
+    } else {
+        animationScript
+    }
+}

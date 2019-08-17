@@ -44,20 +44,11 @@ illustration = function(id = NULL,
                         onPrerender = NULL,
                         onDragStart = NULL){
 
-    dependency = htmltools::htmlDependency(
-        'zdog',
-        src = system.file('htmlwidgets/lib/zdog-1.0.2',package = 'rdog'),
-        version = '1.0',
-        script = c('zdog.min.js','zfont.min.js','zfontInit.js','rdog_variables.js')
-    )
 
     if(is.null(id)){
         id = basename(tempfile(pattern = 'id'))
     }
 
-
-
-    canvas = htmltools::tags$canvas(id = canvasID, class = class,width=width, height = height, style = glue::glue("background:{background}"))
 
     assertthat::assert_that(is.logical(dragRotate) | is.character(dragRotate))
     if(is.logical(dragRotate)){
@@ -88,9 +79,9 @@ illustration = function(id = NULL,
             dragRotate: <tolower(dragRotate)>,
             centered: <tolower(centered)>,
             zoom: <zoom>,
-            scale: <scale>,
-            translate: {x: <translate['x']>, y: <translate['y']>, z: <translate['z']>},
-            rotate: {x: <rotate['x']>, y: <rotate['y']>, z: <rotate['z']>},
+            scale: <process_coord_vector(scale,allowSingle=TRUE,default=1)>,
+            translate: <process_coord_vector(translate)>,
+            rotate: <process_coord_vector(rotate)>,
             resize: <tolower(resize)>,
             onResize: function(width, height){
             <onResize>
@@ -98,26 +89,27 @@ illustration = function(id = NULL,
             onPrerender: function(context){
             <onPrerender>
             }
-
-
         });",
         .open = '<',.close = '>')
 
-    out = htmltools::tagList(
-        dependency,
-        canvas,
-        htmltools::tags$script(illustration)
+
+    x <- list(
+        jsCode = illustration,
+        canvasID = canvasID,
+        illId = id,
+        width = width,
+        height = height,
+        background = background,
+        components = list(),
+        fonts = list()
     )
 
-    attributes(out) = c(attributes(out),
-                        list(id = id,
-                             canvasID = canvasID,
-                             height = height,
-                             width = width,
-                             background = background,
-                             js = illustration))
-
-    class(out) = append('rdog',class(out))
+    # create the widget
+    out = htmlwidgets::createWidget("zdog", x, width = width, height = height, package='rdog',
+                              sizingPolicy = htmlwidgets::sizingPolicy(
+                                  padding = 0,
+                                  viewer.padding = 0
+                              ))
 
 
     return(out)

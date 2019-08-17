@@ -52,6 +52,8 @@ HTMLWidgets.widget({
         document.getElementById(el.id).appendChild(canv);
         eval(x.jsCode);
 
+        eval(x.illId + ".updateRenderGraph()");
+
 
       },
 

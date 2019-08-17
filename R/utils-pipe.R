@@ -11,5 +11,11 @@
 NULL
 
 
-#' @importFrom webshot2 webshot
-webshot2::webshot
+#' @importFrom magrittr %<>%
+#' @usage lhs \%<>\$ rhs
+#' @keywords internal
+NULL
+
+
+#' @importFrom zeallot %<-%
+NULL

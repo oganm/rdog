@@ -7,7 +7,7 @@
 illustration(id = NULL, class = id, canvasID = id, width = 240,
   height = 240, background = "#FFDDBB", dragRotate = TRUE,
   centered = TRUE, zoom = 1, scale = 1, translate = c(x = 0, y = 0,
-  z = 0), rotate = c(x = 0, y = 0, z = 0), resize = TRUE,
+  z = 0), rotate = c(x = 0, y = 0, z = 0), resize = FALSE,
   onResize = NULL, onPrerender = NULL, onDragStart = NULL)
 }
 \arguments{

@@ -6,8 +6,6 @@ zfont_font = function(rdog = NULL,
     fontPath = dirname(font)
     fontName = basename(font)
 
-    parentAttributes = attributes(rdog)
-
     fullString = glue::glue(
         'Rdog_variables.fonts.<id> = new Zdog.Font({
             src: document.getElementById("<id>-attachment").href
@@ -15,37 +13,18 @@ zfont_font = function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    parentAttributes = attributes(rdog)
 
-    out = htmltools::tagList(rdog,
-                             htmltools::tags$link(href =
-                                                      paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font)),
-                                                  id = glue::glue('{id}-attachment'),
-                                                  rel = 'attachment'),
-                             # htmltools::htmlDependency(name = id,version = '1.0',src = fontPath,attachment = fontName),
-                             htmltools::tags$script(fullString))
+    rdog$x$fonts %<>% c(
+        list(list(
+            id = id,
+            font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
+        ))
+    )
 
-    fontList = list(list(
-        id = id,
-        font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
-    ))
-    names(fontList) = id
-
-    parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
+    rdog$x$jsCode %<>% paste0('\n',fullString)
 
 
-    parentAttributes$fonts = c(parentAttributes$fonts,
-                               fontList)
-
-    # newAttributes = c(parentAttributes,
-    #                   list(font = list(
-    #                       what = 'font',
-    #                       id = id,
-    #                       font = paste0('data:application/x-font-truetype;base64,',base64enc::base64encode(font))
-    #                   )))
-
-    attributes(out) = parentAttributes
-    return(out)
+    return(rdog)
 }
 
 zfont_text = function(rdog = NULL,
@@ -68,16 +47,8 @@ zfont_text = function(rdog = NULL,
                       scale = c(x = 1, y = 1, z = 1)){
 
 
-    # if a parent isn't specified, add to the illustration
-    if(is.null(addTo) && !is.null(rdog)){
-        addTo = attributes(rdog)$id
-    } else if(is.null(addTo) && is.null(rdog)){
-        stop('Both addTo and rdog is left blank')
-    }
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 
-    if(is.null(id)){
-        id = basename(tempfile(pattern = 'id'))
-    }
 
     anchorString = internal_anchor(addTo,
                                    translate,
@@ -114,20 +85,19 @@ zfont_text = function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    parentAttributes = attributes(rdog)
-    out = htmltools::tagList(rdog,
-                             htmltools::tags$script(fullString))
+    if(!is.null(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',fullString)
 
-    parentAttributes$js = paste0(parentAttributes$js,'\n',fullString)
+        rdog$x$components %<>% c(
+            list(text = list(
+                what = 'text',
+                id = id,
+                parent = addTo
+            )))
 
-    newAttributes = c(parentAttributes,
-                      list(text = list(
-                          what = 'text',
-                          id = id,
-                          parent = addTo
-                      )))
-
-    attributes(out) = newAttributes
-    return(out)
+        return(rdog)
+    } else{
+        return(fullString)
+    }
 
 }

@@ -13,12 +13,13 @@ Imports:
     assertthat,
     magrittr,
     shinyjs,
-    webshot2,
+    chromote,
     magick,
     base64enc,
     htmlwidgets,
-    purrr
+    purrr,
+    zeallot
 Remotes:
     oganm/ogbox,
-    rstudio/webshot2
+    rstudio/chromote
 RoxygenNote: 6.1.1

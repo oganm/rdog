@@ -4,7 +4,7 @@
 \alias{animation_none}
 \title{No animation}
 \usage{
-animation_none(rdog = NULL, id = NULL)
+animation_none(rdog = NULL, id = NULL, addTo = NULL)
 }
 \description{
 Just establishes the animation loop without actually moving anything. This

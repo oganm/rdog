@@ -1,6 +1,8 @@
 ---
 title: "rdog"
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -26,87 +28,106 @@ viewer. Some elements appears to misbehave in older versions.
 
 ## Basic usage
 
+An animated illustration can be created by adding elements to an illustration
+using `%>%`. Each shape can be added to the illustartion itself (default), or
+to another existing shape which will be used as a reference point. Here a box is
+created placed on `y = -20`. The next element is an ellipse which is added to the 
+box which places it in the middle of the box.
+
+To add text, a font should be added first. `zfont_font(id = 'font')` creates one
+with the default font, "Roboto-Regular". Different fonts can be used if you have
+the `ttf` files.
+
+Finally, animations are also added to elements or the entire illustration. Here
+`animation_rotate` is added to the ellipse and `animation_ease_in` is added to the
+box which makes them rotate at different rates. `animation_none` will not move the
+objects but creates the loop required for `dragRotate` to work.
+
 ``` {r}
-illustration('illo',dragRotate = TRUE) %>% 
-        shape_rect(width = 50, height = 50,stroke = 20, fill = FALSE,rotate = c(z=tau/8)) %>% 
-    shape_ellipse(id = 'hede',color = 'red',stroke = 20,width = 120,height = 120,fill = FALSE) %>%
+illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>% 
+    shape_box(id ='cornell',
+              width = 150,
+              height = 150,
+              depth = 150,
+              translate = c(y = '-20'),
+              rotate = c(x = -tau/20,y = tau/16),
+              stroke = 1,
+              color = '#C25',
+              leftFace = 'red',
+              rightFace =  'green',
+              topFace =  'white',
+              bottomFace =  'white',
+              frontFace =  FALSE,
+              rearFace= 'lightgray') %>% 
+    shape_ellipse(
+        addTo = 'cornell',
+        id = "ellipse",
+        diameter = 80,
+        stroke = 20,
+        color = '#636',fill = FALSE
+    ) %>% 
     zfont_font(id = 'font') %>% 
-    zfont_text(zfont = 'font',text = 'Text',fontSize = 50,
-               textAlign = 'center',stroke = 4,translate = c(y = 110)) %>%
-    # animation_none()
-    animation_rotate(rotate = c(y = .05)) %>% 
-    record_gif(duration = 4)
+    zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center') %>% 
+    animation_rotate(addTo = 'ellipse',id = 'rotate',rotate = c(y = 0.05)) %>% 
+    animation_ease_in(id = 'ease',radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 200,power = 3) %>% 
+    record_gif(duration = 10)
 ```
 
 
 `record_gif` is not required for interactive usage or html renderings. By default, the
-output is a tagList, that can be automatically displayed in the viewer. This doesn't work
+output is an htmlwidget, that can be automatically displayed in the viewer. This doesn't work
 with github_document's due to restrictions on github so rendering into a gif is necesary.
 
 ## Use in shiny
 
-WIP. Syntax below is subject to change since it depends on the `rdog_widget` function. Currently
-looking for a way to get rid of that.
+rdog functions return a shiny widget which can be used in shiny applications using
+`renderRdog` and `rdogOutput` functions. Below is a basic app where radius of an
+ellipse is controlled by a `sliderInput`.
 
 ```r
 library(shiny)
-library(rdog)
+devtools::load_all()
+
+
 ui <- fluidPage(
-    shiny::sliderInput(min = 0, max = 100, inputId = 'slider',label = '',value = 20),
-    rdogOutput('dogy',height = 240,width = 240)
+    shiny::sliderInput(min = 0, max = 140, inputId = 'slider',label = '',value = 80),
+    rdogOutput('doggo',height = 240,width = 240)
 )
 
 server <- function(input, output) {
-    output$dogy = renderRdog({
-        illustration('illo',dragRotate = TRUE) %>%
-            shape_rect(width = 50, height = 50,stroke = input$slider, fill = FALSE,rotate = c(z=tau/8)) %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE) %>%
+    output$doggo = renderRdog({
+        illustration('illo',width = 250,height = 250) %>%
+            shape_box(id ='cornell',
+                      width = 150,
+                      height = 150,
+                      depth = 150,
+                      translate = c(y = '-20'),
+                      rotate = c(x = -tau/20,y = tau/16),
+                      stroke = 1,
+                      color = '#C25',
+                      leftFace = 'red',
+                      rightFace =  'green',
+                      topFace =  'white',
+                      bottomFace =  'white',
+                      frontFace =  FALSE,
+                      rearFace= 'lightgray') %>%
+            shape_ellipse(
+                addTo = 'cornell',
+                id = "ellipse",
+                diameter = input$slider,
+                stroke = 20,
+                color = '#636',fill = FALSE
+            ) %>%
             zfont_font(id = 'font') %>%
-            zfont_text(zfont = 'font',text = 'Text',fontSize = 50,
-                       textAlign = 'center',stroke = 4,translate = c(y = 110)) %>%
-            # animation_none()
-            animation_rotate(rotate = c(y = .05)) %>%
-            rdog_widget()
-
-    })
-
-}
-
-# Run the application
-shinyApp(ui = ui, server = server)
-```
-
-<!--
-Currently the shiny syntax is a little non-standard and it's likely to change. As 
-shown in the example below, one has to use `rdogOutput` on the UI code like a regular
-shiny UI element, however, instead of using a function like `renderRdog`, instead we
-create the rdog illusration inside an `observe` code block and pass the output to
-`make_shiny`.
-
-
-```r
-library(shiny)
-library(rdog)
-ui <- fluidPage(
-    shiny::sliderInput(min = 0, max = 100, inputId = 'slider',label = '',value = 20),
-
-    rdogOutput(id = 'canv')
-)
-
-server <- function(input, output) {
-   observe({
-        illustration(id = 'canv') %>%
-            shape_ellipse(id = 'hede',color = 'red',stroke = input$slider,width = 120,height = 120,fill = FALSE) %>%
-            animation_none() %>%
-            make_shiny()
+            zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center')  %>%
+            animation_ease_in(id = 'ease',radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 200,power = 3)
     })
 
 }
 
 shinyApp(ui = ui, server = server)
-
 ```
--->
+
 
 ## Use as shiny inputs
 
