@@ -66,8 +66,6 @@ illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>%
     record_gif(duration = 10)
 ```
 
-    ## .....................................................................................................
-
 ![](README_files/figure-gfm/unnamed-chunk-1-1.gif)<!-- -->
 
 `record_gif` is not required for interactive usage or html renderings.
@@ -79,21 +77,24 @@ to restrictions on github so rendering into a gif is necesary.
 
 rdog functions return a shiny widget which can be used in shiny
 applications using `renderRdog` and `rdogOutput` functions. Below is a
-basic app where radius of an ellipse is controlled by a `sliderInput`.
+basic app where radius of an ellipse is controlled by a `sliderInput`
+and a spin animation can be triggered by pressing a button. Note that
+`useShinyjs()` is required to trigger the animation in a separate code
+block.
 
 ``` r
 library(shiny)
 devtools::load_all()
-
-
 ui <- fluidPage(
+    shinyjs::useShinyjs(),
+    shiny::actionButton(inputId = 'anim',label = 'Animate'),
     shiny::sliderInput(min = 0, max = 140, inputId = 'slider',label = '',value = 80),
-    rdogOutput('doggo',height = 240,width = 240)
+    rdogOutput('dogy',height = 240,width = 240)
 )
 
 server <- function(input, output) {
-    output$doggo = renderRdog({
-        illustration('illo',width = 250,height = 250) %>%
+    output$dogy = renderRdog({
+        illustration('illo',width = 250,height = 250,dragRotate = TRUE) %>%
             shape_box(id ='cornell',
                       width = 150,
                       height = 150,
@@ -117,7 +118,17 @@ server <- function(input, output) {
             ) %>%
             zfont_font(id = 'font') %>%
             zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center')  %>%
-            animation_ease_in(id = 'ease',radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 200,power = 3)
+            animation_none(id = 'none')
+            # animation_rotate(addTo = 'ellipse',id = 'rotate',rotate = c(y = 0.05)) %>%
+            # animation_ease_in(id = 'ease',frames = Inf,radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
+    })
+
+    observe({
+        print(input$anim)
+        if(input$anim>0){
+            animation_ease_in(id = 'ease',rdog = 'illo',frames = 120,radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
+            # animation_rotate(id = 'rotate', rdog = 'illo',frames = 120, rotate = c(y = tau/120))
+        }
     })
 
 }

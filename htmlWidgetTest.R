@@ -18,7 +18,7 @@ ui <- fluidPage(
 
 server <- function(input, output) {
     output$dogy = renderRdog({
-        illustration('illo',width = 250,height = 250,dragRotate = FALSE) %>%
+        illustration('illo',width = 250,height = 250,dragRotate = TRUE) %>%
             shape_box(id ='cornell',
                       width = 150,
                       height = 150,
@@ -41,7 +41,8 @@ server <- function(input, output) {
                 color = '#636',fill = FALSE
             ) %>%
             zfont_font(id = 'font') %>%
-            zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center') # %>%
+            zfont_text(zfont = 'font', text = 'Cornell Box',fontSize = 24,translate = c(y = 120),textAlign = 'center')  %>%
+            animation_none(id = 'none')
             # animation_rotate(addTo = 'ellipse',id = 'rotate',rotate = c(y = 0.05)) %>%
             # animation_ease_in(id = 'ease',frames = Inf,radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
     })
