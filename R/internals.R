@@ -107,3 +107,24 @@ process_id_inputs = function(rdog, addTo, id){
 
     return(list(addTo, id, illoId))
 }
+
+
+process_shape_output = function(rdog, id, addTo, script, what){
+
+    if(!is.null(rdog) && 'htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',script)
+        rdog$x$components %<>% c(
+            list(ellipse =
+                     list(what = what,
+                          id = id,
+                          parent = addTo))
+        )
+        return(rdog)
+
+    } else if(is.null(rdog) || is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(script)
+        }
+        return(script)
+    }
+}

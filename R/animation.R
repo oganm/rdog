@@ -98,6 +98,6 @@ animation_ease_in = function(rdog,
         if(shiny::isRunning()){
             shinyjs::runjs(animationScript)
         }
-        animationScript
+        return(animationScript)
     }
 }

@@ -73,22 +73,7 @@ shape_ellipse = function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
-
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'ellipse',
-                          id = id,
-                          parent = addTo))
-        )
-
-
-        return(rdog)
-    } else {
-        fullString
-    }
+    process_shape_output(rdog, id, addTo, fullString, 'ellipse')
 }
 
 
@@ -157,21 +142,8 @@ shape_rect = function(
 
 
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'rect')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-        rdog$x$components %<>% c(
-            list(rect =
-                     list(what = 'rect',
-                          id = id,
-                          parent = addTo))
-    )
-
-
-    return(rdog)
-    } else{
-        fullString
-    }
 }
 
 
@@ -244,18 +216,8 @@ shape_roundedRect = function(
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-        rdog$x$components %<>% c(
-            list(roundedRect =
-                     list(what = 'roundedRect',
-                          id = id,
-                          parent = addTo))
-        )
-        return(rdog)
-    } else{
-        fullString
-    }
+    process_shape_output(rdog, id, addTo, fullString, 'roundedRect')
+
 }
 
 
@@ -328,18 +290,8 @@ shape_polygon = function(
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-        rdog$x$components %<>% c(
-            list(roundedRect =
-                     list(what = 'roundedRect',
-                          id = id,
-                          parent = addTo))
-        )
-        return(rdog)
-    } else{
-        fullString
-    }
+    process_shape_output(rdog, id, addTo, fullString, 'polygon')
+
 }
 
 
@@ -433,18 +385,8 @@ shape_shape = function(
 
 
 
-    if(!is.null(rdog)){
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-        rdog$x$components %<>% c(
-            list(path =
-                     list(what = 'path',
-                          id = id,
-                          parent = addTo))
-        )
-        return(rdog)
-    } else{
-        fullString
-    }
+    process_shape_output(rdog, id, addTo, fullString, 'path')
+
 }
 
 
@@ -518,22 +460,8 @@ shape_hemisphere = function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'hemisphere')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'hemisphere',
-                          id = id,
-                          parent = addTo))
-        )
-
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
 
 
@@ -604,22 +532,8 @@ shape_cone= function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'cone')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'cone',
-                          id = id,
-                          parent = addTo))
-        )
-
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
 
 
@@ -690,22 +604,8 @@ shape_cylinder= function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'cylinder')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'cylinder',
-                          id = id,
-                          parent = addTo))
-        )
-
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
 
 
@@ -797,21 +697,8 @@ shape_box= function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'box')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'box',
-                          id = id,
-                          parent = addTo))
-        )
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
 
 
@@ -843,21 +730,8 @@ anchor = function(
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'anchor')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'anchor',
-                          id = id,
-                          parent = addTo))
-        )
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
 
 
@@ -874,13 +748,13 @@ anchor = function(
 #'
 #' @export
 group= function(rdog = NULL,
-                         id = NULL,
-                         addTo = NULL,
+                id = NULL,
+                addTo = NULL,
                 updateSort = FALSE,
                 visible = TRUE,
-                         translate = c(x =0, y=0,z=0),
-                         rotate = c(x = 0, y = 0, z = 0),
-                         scale = c(x = 1, y = 1, z = 1)
+                translate = c(x =0, y=0,z=0),
+                rotate = c(x = 0, y = 0, z = 0),
+                scale = c(x = 1, y = 1, z = 1)
 ){
     c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 
@@ -912,20 +786,6 @@ group= function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
+    process_shape_output(rdog, id, addTo, fullString, 'group')
 
-        rdog$x$jsCode %<>% paste0('\n',fullString)
-
-        rdog$x$components %<>% c(
-            list(ellipse =
-                     list(what = 'group',
-                          id = id,
-                          parent = addTo))
-        )
-
-
-        return(rdog)
-    } else {
-        fullString
-    }
 }
