@@ -85,19 +85,7 @@ zfont_text = function(rdog = NULL,
         .close = '>',.open = '<'
     )
 
-    if(!is.null(rdog)){
-        rdog$x$jsCode %<>% paste0('\n',fullString)
+    process_shape_output(rdog, id, addTo, fullString, 'text')
 
-        rdog$x$components %<>% c(
-            list(text = list(
-                what = 'text',
-                id = id,
-                parent = addTo
-            )))
-
-        return(rdog)
-    } else{
-        return(fullString)
-    }
 
 }
