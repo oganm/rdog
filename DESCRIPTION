@@ -18,7 +18,8 @@ Imports:
     base64enc,
     htmlwidgets,
     purrr,
-    zeallot
+    zeallot,
+    shinyjs
 Remotes:
     oganm/ogbox,
     rstudio/chromote

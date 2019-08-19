@@ -53,7 +53,6 @@ record_gif = function(rdog,file = NULL, duration = 3){
         framesLocal = frames
         framesLocal[[length(framesLocal) + 1]] <- value
         assign('frames',framesLocal,envir = currentFrame)
-        cat(".")
     })
 
     # You'll need to provide the correct file path
