@@ -55,8 +55,8 @@ Rdog_variables.utils.set_up_vars = function(id, add_to, illo_id){
 // of the same animation function if it is secondary, it terminates itself
 // and reduces the secondary counter to prevent the original animation
 // to terminate as well.
-Rdog_variables.utils.terminationCheck = function(id){
-    if(Rdog_variables.animations[id] > 1){
+Rdog_variables.utils.terminationCheck = function(id, frames){
+    if(Rdog_variables.animations[id] > 1 || frames<1){
         Rdog_variables.animations[id] -=1;
         return true;
     } else{
@@ -74,7 +74,7 @@ Rdog_variables.built_in.animation_none = function(id, add_to, illo_id){
     Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
 
     Rdog_variables.animFuns[id]= function(){
-        if(Rdog_variables.utils.terminationCheck(id)){
+        if(Rdog_variables.utils.terminationCheck(id, Infinity)){
             return;
         }
 
@@ -90,14 +90,15 @@ Rdog_variables.built_in.animation_none = function(id, add_to, illo_id){
 
 };
 
-Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, x, y, z){
+Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames, x, y, z){
     Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
 
     Rdog_variables.animFuns[id] = function(){
 
-        if(Rdog_variables.utils.terminationCheck(id)){
+        if(Rdog_variables.utils.terminationCheck(id, frames)){
             return;
         }
+        frames -= 1;
 
         window[add_to].rotate.x += x;
         window[add_to].rotate.y += y;
@@ -117,22 +118,23 @@ Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, x, y, z
 
 
 
-Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, framesPerCycle, radiansPerCycle, rotateAxis, power){
+Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames, framesPerCycle, radiansPerCycle, rotateAxis, power){
     Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
 
     // keep the needed variables in a globally accessible object instead of using
     // let to prevent values from getting lost if the original function is terminated.
     if (Rdog_variables.animation_variables[id] === undefined){
         Rdog_variables.animation_variables[id] = {};
-        Rdog_variables.animation_variables[id].ticker = 0;
+        Rdog_variables.animation_variables[id].ticker = 1;
     }
 
     //ticker = 0
 
     Rdog_variables.animFuns[id]= function(){
-        if(Rdog_variables.utils.terminationCheck(id)){
+        if(Rdog_variables.utils.terminationCheck(id, frames)){
             return;
         }
+        frames -= 1;
 
         let ticker = Rdog_variables.animation_variables[id].ticker;
 
