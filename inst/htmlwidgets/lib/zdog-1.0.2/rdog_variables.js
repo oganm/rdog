@@ -118,7 +118,7 @@ Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames,
 
 
 
-Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames, framesPerCycle, radiansPerCycle, rotateAxis, power){
+Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames, framesPerCycle, pause, radiansPerCycle, rotateAxis, power){
     Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
 
     // keep the needed variables in a globally accessible object instead of using
@@ -126,6 +126,8 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
     if (Rdog_variables.animation_variables[id] === undefined){
         Rdog_variables.animation_variables[id] = {};
         Rdog_variables.animation_variables[id].ticker = 1;
+        Rdog_variables.animation_variables[id].pausing = false;
+        Rdog_variables.animation_variables[id].pauseTicker = pause;
     }
 
     //ticker = 0
@@ -137,23 +139,38 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
         frames -= 1;
 
         let ticker = Rdog_variables.animation_variables[id].ticker;
+        let pausing = Rdog_variables.animation_variables[id].pausing;
 
-        let progress = ticker/framesPerCycle;
-        let previousProgress = (ticker-1)/framesPerCycle;
-        let rotation = Zdog.easeInOut( progress % 1, power );
-        let previousRotation = Zdog.easeInOut( (ticker-1)/framesPerCycle % 1, power );
-        let delta = 0;
+        if(!pausing){
+            let progress = ticker/framesPerCycle;
+            let previousProgress = (ticker-1)/framesPerCycle;
+            let rotation = Zdog.easeInOut( progress % 1, power );
+            let previousRotation = Zdog.easeInOut( (ticker-1)/framesPerCycle % 1, power );
+            let delta = 0;
 
-        if(rotation>previousRotation){
-            delta = rotation - previousRotation;
+            if(rotation>previousRotation){
+                delta = rotation - previousRotation;
+            } else{
+                if(pause>0){
+                    Rdog_variables.animation_variables[id].pausing = true;
+                }
+                delta = 1+rotation-previousRotation;
+            }
+
+            window[add_to].rotate[rotateAxis] += delta * radiansPerCycle;
+
+            ticker++;
+            Rdog_variables.animation_variables[id].ticker = ticker;
         } else{
-            delta = 1+rotation-previousRotation;
+            Rdog_variables.animation_variables[id].pauseTicker -=1;
+            if(Rdog_variables.animation_variables[id].pauseTicker === 0){
+                Rdog_variables.animation_variables[id].pausing = false;
+                Rdog_variables.animation_variables[id].pauseTicker = pause;
+            }
+
         }
 
-        window[add_to].rotate[rotateAxis] += delta * radiansPerCycle;
 
-        ticker++;
-        Rdog_variables.animation_variables[id].ticker = ticker;
 
         // record any changes to the original object and illustration
         Rdog_variables.animRotating_objects[add_to] = window[add_to];

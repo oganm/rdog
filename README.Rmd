@@ -1,5 +1,4 @@
 ---
-title: "rdog"
 output: github_document
 editor_options: 
   chunk_output_type: console
@@ -9,6 +8,8 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 devtools::load_all()
 ```
+
+# Rdog <img src="logo.gif" align="right" height="150"/>
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.

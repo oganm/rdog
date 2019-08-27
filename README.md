@@ -1,5 +1,5 @@
-rdog
-================
+
+# Rdog <img src="logo.gif" align="right" height="150"/>
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.

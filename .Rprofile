@@ -8,3 +8,4 @@ shim_system_file <- function(package) {
 
 shim_system_file("htmlwidgets")
 shim_system_file("htmltools")
+devtools::load_all()

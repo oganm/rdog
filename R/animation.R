@@ -68,10 +68,11 @@ animation_rotate = function(rdog = NULL,
 
 #' @export
 animation_ease_in = function(rdog,
-                             id,
-                             addTo,
+                             id = NULL,
+                             addTo = NULL,
                              frames = Inf,
                              framesPerCycle = 150,
+                             pause = 0,
                              radiansPerCycle = tau,
                              rotateAxis = 'y',
                              power = 2){
@@ -88,7 +89,7 @@ animation_ease_in = function(rdog,
 
     animationScript = glue::glue(
         '
-        Rdog_variables.built_in.animation_ease_in("<id>","<addTo>","<illoId>",<frames>,<framesPerCycle>,<radiansPerCycle>,"<rotateAxis>",<power>);
+        Rdog_variables.built_in.animation_ease_in("<id>","<addTo>","<illoId>",<frames>,<framesPerCycle>,<pause>,<radiansPerCycle>,"<rotateAxis>",<power>);
         ',.open = '<',.close = '>')
 
     if('htmlwidget' %in% class(rdog)){

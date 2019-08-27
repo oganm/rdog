@@ -344,7 +344,7 @@ shape_shape = function(
         assertthat::assert_that(is.list(path))
 
         seq_along(path) %>% sapply(function(i){
-            if(is.null(names(path)[i]) | names(path)[i] == ''){
+            if(is.null(names(path)[i]) || names(path)[i] == ''){
                 assertthat::assert_that(!is.list(path[[i]]),msg = 'Nested elements in path must have names')
                 return(process_coord_vector(path[[i]]))
             } else{
@@ -626,12 +626,12 @@ shape_box= function(rdog = NULL,
                          width = 1,
                          height = 1,
                          depth = 1,
-                         frontFace = '#333',
-                         rearFace = '#333',
-                         leftFace = '#333',
-                         rightFace = '#333',
-                         topFace = '#333',
-                         bottomFace = '#333',
+                         frontFace = color,
+                         rearFace = color,
+                         leftFace = color,
+                         rightFace = color,
+                         topFace = color,
+                         bottomFace = color,
                          color = '#333',
                          stroke = 1,
                          fill = TRUE,
