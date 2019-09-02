@@ -5,12 +5,12 @@
 \title{Box}
 \usage{
 shape_box(rdog = NULL, id = NULL, width = 1, height = 1,
-  depth = 1, frontFace = "#333", rearFace = "#333",
-  leftFace = "#333", rightFace = "#333", topFace = "#333",
-  bottomFace = "#333", color = "#333", stroke = 1, fill = TRUE,
-  closed = TRUE, visible = TRUE, backface = TRUE, front = c(z = 1),
-  addTo = NULL, translate = c(x = 0, y = 0, z = 0), rotate = c(x = 0,
-  y = 0, z = 0), scale = c(x = 1, y = 1, z = 1))
+  depth = 1, frontFace = color, rearFace = color, leftFace = color,
+  rightFace = color, topFace = color, bottomFace = color,
+  color = "#333", stroke = 1, fill = TRUE, closed = TRUE,
+  visible = TRUE, backface = TRUE, front = c(z = 1), addTo = NULL,
+  translate = c(x = 0, y = 0, z = 0), rotate = c(x = 0, y = 0, z = 0),
+  scale = c(x = 1, y = 1, z = 1))
 }
 \arguments{
 \item{rdog}{rdog object to add the shape to}

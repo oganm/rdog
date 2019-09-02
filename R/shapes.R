@@ -341,27 +341,9 @@ shape_shape = function(
                                  front)
 
     if(!is.null(path)){
-        assertthat::assert_that(is.list(path))
-
-        seq_along(path) %>% sapply(function(i){
-            if(is.null(names(path)[i]) || names(path)[i] == ''){
-                assertthat::assert_that(!is.list(path[[i]]),msg = 'Nested elements in path must have names')
-                return(process_coord_vector(path[[i]]))
-            } else{
-                if(is.list(path[[i]])){
-                return(
-                       glue::glue('{ !names(path)[i]@: [\n!path[[i]] %>% lapply(process_coord_vector) %>% c(list(sep=",\n")) %>% do.call(paste,.)@\n]}',.close = '@',.open = '!')
-                    )
-                } else{
-                    return(
-                        glue::glue('{ <names(path)[i]>: <process_coord_vector(path[[i]])> }',.open = '<',.close = '>')
-                    )
-                }
-            }
-        }) %>% c(list(sep = ',\n')) %>% do.call(paste,.) -> pathString
 
         selfString = glue::glue(
-            'path: [<pathString>]',
+            'path: <process_path(path)>',
             .close = '>',.open = '<'
         )
 

@@ -50,8 +50,8 @@ server <- function(input, output) {
     observe({
         print(input$anim)
         if(input$anim>0){
-            animation_ease_in(id = 'ease',rdog = 'illo',frames = 120,radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
-            # animation_rotate(id = 'rotate', rdog = 'illo',frames = 120, rotate = c(y = tau/120))
+            # animation_ease_in(id = 'ease',rdog = 'illo',frames = 120,radiansPerCycle = tau/2,addTo='cornell',framesPerCycle = 120,power = 3)
+            animation_rotate(id = 'rotate', rdog = 'illo',addTo='cornell',frames = 60, rotate = c(y = tau/120))
         }
     })
 

@@ -4,9 +4,9 @@ Rdog_variables.fonts = {};
 Rdog_variables.animFuns = {};
 Rdog_variables.animRotating_objects = {};
 Rdog_variables.animation_variables = {};
-
-
 Rdog_variables.utils = {};
+Rdog_variables.svg = {};
+
 
 // set up animation arguments that are used to preserve element rotation
 // between updates and prevent applying the same animation
@@ -38,13 +38,14 @@ Rdog_variables.utils.set_up_vars = function(id, add_to, illo_id){
     // if the current execution is happening after a restart, give the rotation of the
     // rotating element to the real element so that the rotation angle is not reset
     if( Rdog_variables.animations[id] > 1){
-        window[add_to].rotate.x = Rdog_variables.animRotating_objects[add_to].rotate.x;
-        window[add_to].rotate.y = Rdog_variables.animRotating_objects[add_to].rotate.y;
-        window[add_to].rotate.z = Rdog_variables.animRotating_objects[add_to].rotate.z;
 
-        window[illo_id].rotate.x = Rdog_variables.animRotating_objects[illo_id].rotate.x;
-        window[illo_id].rotate.y = Rdog_variables.animRotating_objects[illo_id].rotate.y;
-        window[illo_id].rotate.z = Rdog_variables.animRotating_objects[illo_id].rotate.z;
+        Object.getOwnPropertyNames(Rdog_variables.animRotating_objects).forEach(
+            function(element){
+                window[element].rotate.x = Rdog_variables.animRotating_objects[element].rotate.x;
+                window[element].rotate.y = Rdog_variables.animRotating_objects[element].rotate.y;
+                window[element].rotate.z = Rdog_variables.animRotating_objects[element].rotate.z;
+            }
+        );
 
     }
 
@@ -175,6 +176,7 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
         // record any changes to the original object and illustration
         Rdog_variables.animRotating_objects[add_to] = window[add_to];
         Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+        console.log(Rdog_variables.animRotating_objects[add_to].rotate);
 
 
         window[illo_id].updateRenderGraph();
@@ -182,4 +184,25 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
     };
     Rdog_variables.animFuns[id]();
 
+};
+
+
+// taken from
+// https://codepen.io/chrisgannon/pen/4ef3e5deaf41cf81415c52112ea2692c
+Rdog_variables.utils.makeZdogBezier = function(_path){
+    	let arr = [];
+	    arr[0] = {x: _path[0].x, y: _path[0].y};
+	    for(let i = 1; i < _path.length; i++) {
+		    if(i % 3 === 0 ) {
+			    var key = "bezier";
+			    var obj = {};
+			    obj[key] = [
+				    {x: _path[i-2].x, y: _path[i-2].y},
+				    {x: _path[i-1].x, y: _path[i-1].y},
+				    {x: _path[i].x , y: _path[i].y }
+			    ];
+			    arr.push(obj);
+		    }
+	    }
+	return arr;
 };

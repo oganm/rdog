@@ -10,7 +10,7 @@
 #' @param visible Logical. Is the shape visible.
 #' @param backface Logical. Should backface be visible or a color string to set a different
 #' color
-#' @param front. Determine where the front of the shape is to decide rendering backface color.
+#' @param front Determine where the front of the shape is to decide rendering backface color.
 #' A vector with named x, y, z elements.
 internal_shape = function(
     color = '#333',
@@ -57,6 +57,8 @@ internal_anchor = function(
     scale = c(x = 1, y = 1, z = 1)
 ){
 
+    assertthat::assert_that(assertthat::is.string(addTo))
+
     glue::glue(
         'addTo: <addTo>,
         translate: <process_coord_vector(translate)>,
@@ -85,7 +87,7 @@ process_coord_vector = function(vector,default = 0, allowSingle = FALSE){
 
 
 process_id_inputs = function(rdog, addTo, id){
-    if(is.null(addTo) && !is.character(rdog)){
+    if(is.null(addTo) && !is.null(rdog) && !is.character(rdog)){
         addTo = rdog$x$illId
     } else if(is.null(addTo) && is.character(rdog)){
         addTo = rdog
@@ -127,4 +129,148 @@ process_shape_output = function(rdog, id, addTo, script, what){
         }
         return(script)
     }
+}
+
+
+process_path = function(path){
+    assertthat::assert_that(is.list(path))
+
+    seq_along(path) %>% sapply(function(i){
+        if(is.null(names(path)[i]) || names(path)[i] == ''){
+            assertthat::assert_that(!is.list(path[[i]]),msg = 'Nested elements in path must have names')
+            return(process_coord_vector(path[[i]]))
+        } else{
+            if(is.list(path[[i]])){
+                return(
+                    glue::glue('{ !names(path)[i]@: [\n!path[[i]] %>% lapply(process_coord_vector) %>% c(list(sep=",\n")) %>% do.call(paste,.)@\n]}',.close = '@',.open = '!')
+                )
+            } else{
+                return(
+                    glue::glue('{ <names(path)[i]>: <process_coord_vector(path[[i]])> }',.open = '<',.close = '>')
+                )
+            }
+        }
+    }) %>% c(list(sep = ',\n')) %>% do.call(paste,.) -> pathString
+
+    paste0('[',pathString,']')
+}
+
+process_all_input_types = function(inputName, input){
+    out = switch(inputName,
+           color = {
+               assertthat::assert_that(assertthat::is.string(input))
+               glue::glue('"{input}"')
+           },
+           stroke = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           fill = {
+               assertthat::assert_that(is.logical(input))
+               tolower(input)
+           },
+           closed = {
+               assertthat::assert_that(is.logical(input))
+               tolower(input)
+           },
+           visible = {
+               assertthat::assert_that(is.logical(input))
+               tolower(input)
+           },
+           backface = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(input)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           front = {
+               process_coord_vector(input)
+           },
+           addTo = {
+               assertthat::assert_that(assertthat::is.string(input))
+               input
+           },
+           translate = {
+               process_coord_vector(input)
+           },
+           rotate = {
+               process_coord_vector(input)
+           },
+           scale = {
+               process_coord_vector(input,allowSingle=TRUE,default=1)
+           },
+           height = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           width = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           diameter = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           quarters = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           cornerRadius = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           radius = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           sides = {
+               assertthat::assert_that(input%%1 == 0)
+               input
+           },
+           path = {
+               process_path(input)
+           },
+           length = {
+               assertthat::assert_that(assertthat::is.number(input))
+               input
+           },
+           depth = {
+               assertthat::assert_that(assertthat::is.number(input))
+
+           },
+           frontFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           rearFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           leftFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           rightFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           topFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           bottomFace = {
+               assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+           },
+           updateSort = {
+               assertthat::assert_that(is.logical(input))
+               tolower(input)
+           },
+           visible = {
+               assertthat::assert_that(is.logical(input))
+               tolower(input)
+           })
+
+    if(is.null(out)){
+        stop('Unkown input type')
+    }
+    return(out)
 }
