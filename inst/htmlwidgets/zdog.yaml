@@ -7,3 +7,4 @@ dependencies:
       - zfont.min.js
       - zfontInit.js
       - rdog_variables.js
+      - paper-full.min.js

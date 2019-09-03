@@ -206,3 +206,56 @@ Rdog_variables.utils.makeZdogBezier = function(_path){
 	    }
 	return arr;
 };
+
+// based on https://codepen.io/eeropic/pen/rgQapW
+// this is somewhat silly as we create an entirely new svg element
+Rdog_variables.utils.processSVGData = function(path){
+    let svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    let newpath = document.createElementNS(svg.namespaceURI,"path");
+
+    newpath.setAttributeNS(null, "d",path);
+    svg.appendChild(newpath);
+
+
+    pp = new paper.Project();
+    pp.importSVG(svg);
+
+    compoundPath = pp.layers[0].children[0].children[0].children
+
+    let pathArrays = []
+
+    for(var pathData of compoundPath){
+            let pathArray = [];
+            for(var seg of pathData.segments){
+                if(seg.index===0){
+                    pathArray.push({x:seg.point.x,y:seg.point.y});
+                }
+                else{
+                    pathArray.push({
+                        bezier:[
+                            {
+                                x:seg.previous.point.x+seg.previous.handleOut.x,
+                                y:seg.previous.point.y+seg.previous.handleOut.y
+                            },
+                            {x:seg.point.x+seg.handleIn.x, y:seg.point.y+seg.handleIn.y},
+                            {x:seg.point.x, y:seg.point.y},
+                            ]});
+                    if(pathData.closed && seg.index==pathData.segments.length-1){
+                        pathArray.push({
+                            bezier:[
+                                {x:seg.point.x+seg.handleOut.x, y:seg.point.y+seg.handleOut.y},
+                                {x:seg.next.point.x+seg.next.handleIn.x,y:seg.next.point.y+seg.next.handleIn.y},
+                                {x:seg.next.point.x,y:seg.next.point.y},
+                                ]});
+                    }
+                }
+            }
+
+            pathArrays.push(pathArray);
+
+    }
+
+    return pathArrays;
+
+
+};

@@ -19,7 +19,8 @@ Imports:
     htmlwidgets,
     purrr,
     zeallot,
-    shinyjs
+    shinyjs,
+    V8
 Remotes:
     oganm/ogbox,
     rstudio/chromote
