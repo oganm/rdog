@@ -73,6 +73,27 @@ By default, the output is an htmlwidget, that can be automatically
 displayed in the viewer. This doesn’t work with github\_document’s due
 to restrictions on github so rendering into a gif is necesary.
 
+## Rendering SVG paths
+
+Paths from svg files can also be displayed.
+
+``` r
+# get an svg file
+svgFile = system.file('swords-emblem.svg',package = 'rdog')
+# parse the svg file
+svg = XML::xmlParse(svgFile) %>% XML::xmlToList()
+# extract path
+path = svg$g$path['d']
+
+# animate and record gif
+illustration('illo',width = 512,height = 512, dragRotate = TRUE) %>%
+    svg_path_to_shape(id = 'sword_shield',stroke = 1,svgPath = path,fill =TRUE,closed = FALSE,translate = c(y = -512/4,x = -512/4))  %>% 
+    animation_ease_in(framesPerCycle = 200,pause = 300, power = 30,rotateAxis = 'y') %>%
+    record_gif(file = 'sword_shield.gif',duration = 7)
+```
+
+![](README_files/figure-gfm/unnamed-chunk-2-1.gif)<!-- -->
+
 ## Use in shiny
 
 rdog functions return a shiny widget which can be used in shiny
