@@ -86,8 +86,8 @@ svg = XML::xmlParse(svgFile) %>% XML::xmlToList()
 path = svg$g$path['d']
 
 # animate and record gif
-illustration('illo',width = 512,height = 512, dragRotate = TRUE) %>%
-    svg_path_to_shape(id = 'sword_shield',stroke = 1,svgPath = path,fill =TRUE,closed = FALSE,translate = c(y = -512/4,x = -512/4))  %>% 
+illustration('illo',width = 256,height = 256, dragRotate = TRUE) %>%
+    svg_path_to_shape(id = 'sword_shield',svgWidth = 512, svgHeight = 512,stroke = 1,svgPath = path,scale = .5,fill =TRUE,closed = FALSE)   %>% 
     animation_ease_in(framesPerCycle = 200,pause = 300, power = 30,rotateAxis = 'y') %>%
     record_gif(file = 'sword_shield.gif',duration = 7)
 ```

@@ -1,6 +1,8 @@
 svg_path_to_shape = function(rdog = NULL,
                        id = NULL,
                        svgPath,
+                       svgWidth,
+                       svgHeight,
                        color = '#333',
                        stroke = 1,
                        fill = TRUE,
@@ -58,7 +60,8 @@ svg_path_to_shape = function(rdog = NULL,
     fullString = glue::glue(
         '
         <groupString>
-        let svgPaths = Rdog_variables.utils.processSVGData("<svgPath>")
+
+        svgPaths = Rdog_variables.utils.processSVGData("<svgPath>",<svgWidth>,<svgHeight>)
 
         for(var svgPath of svgPaths){
             new Zdog.Shape({
