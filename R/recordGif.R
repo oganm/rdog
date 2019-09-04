@@ -93,6 +93,40 @@ record_gif = function(rdog,file = NULL, duration = 3){
         magick::image_write(animation,file)
     }
 
+    gc()
+
     return(animation)
+
+}
+
+save_image = function(rdog, file = NULL){
+
+    tags = htmltools::as.tags(rdog, standalone = TRUE)
+
+    www_dir <- tempfile("viewhtml")
+    dir.create(www_dir)
+    index_html <- file.path(www_dir, "index.html")
+    htmltools::save_html(tags, file = index_html,
+                         background = paste0(rdog$x$background,';margin: 0'),
+                         libdir = "lib")
+
+    # b <- chromote::ChromoteSession$new(width = rdog$x$width + 4, height = rdog$x$height + 4)
+
+   #  b$Page$navigate(paste0('file://',index_html))
+
+    if(is.null(file)){
+        file = tempfile(fileext = '.png')
+    }
+
+    webshot2::webshot(index_html,file = file)
+
+    img = magick::image_read(file) %>% magick::image_crop(glue::glue('{rdog$x$width}x{rdog$x$height}'))
+
+    if(!is.null(file)){
+        magick::image_write(img,file)
+    }
+
+    gc()
+    return(img)
 
 }

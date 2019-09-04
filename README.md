@@ -15,7 +15,7 @@ viewer. Some elements appears to misbehave in older versions.
 
 ## Why?
 
-…
+...
 
 ## Basic usage
 
@@ -66,12 +66,13 @@ illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>%
     record_gif(duration = 10)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-1-1.gif)<!-- -->
+![](README_files/figure-gfm/cornell_box-1.gif)<!-- -->
 
 `record_gif` is not required for interactive usage or html renderings.
 By default, the output is an htmlwidget, that can be automatically
 displayed in the viewer. This doesn’t work with github\_document’s due
-to restrictions on github so rendering into a gif is necesary.
+to restrictions on github so rendering into a gif or an image
+(`save_image`) is necesary.
 
 ## Rendering SVG paths
 
@@ -79,20 +80,70 @@ Paths from svg files can also be displayed.
 
 ``` r
 # get an svg file
-svgFile = system.file('swords-emblem.svg',package = 'rdog')
+svgFile = system.file('chess-bishop.svg',package = 'rdog')
 # parse the svg file
 svg = XML::xmlParse(svgFile) %>% XML::xmlToList()
 # extract path
 path = svg$g$path['d']
 
 # animate and record gif
-illustration('illo',width = 256,height = 256, dragRotate = TRUE) %>%
-    svg_path_to_shape(id = 'sword_shield',svgWidth = 512, svgHeight = 512,stroke = 1,svgPath = path,scale = .5,fill =TRUE,closed = FALSE)   %>% 
-    animation_ease_in(framesPerCycle = 200,pause = 300, power = 30,rotateAxis = 'y') %>%
-    record_gif(file = 'sword_shield.gif',duration = 7)
+illustration('illo',width = 256,height = 256) %>%
+    svg_path_to_shape(svgWidth = 512, svgHeight = 512,stroke = 1,svgPath = path,scale = .7,fill =FALSE,closed = FALSE)   %>% 
+    save_image()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-2-1.gif)<!-- -->
+![](README_files/figure-gfm/bishop-1.png)<!-- -->
+
+`stroke` variable can be used to give some depth to svg
+paths.
+
+``` r
+illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)) %>%
+    svg_path_to_shape(svgWidth = 512, svgHeight = 512,stroke =5,svgPath = path,scale = .7,fill =FALSE,closed = FALSE)   %>% 
+    save_image()
+```
+
+![](README_files/figure-gfm/stroke_bishop-1.png)<!-- -->
+
+Note that setting `fill = TRUE` will cause you to lose enclosed shapes
+in an svg
+path
+
+``` r
+illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)) %>%
+    svg_path_to_shape(svgWidth = 512, svgHeight = 512,stroke =5,svgPath = path,scale = .7,fill =TRUE,closed = FALSE)   %>% 
+    save_image()
+```
+
+![](README_files/figure-gfm/fill_bishop-1.png)<!-- -->
+
+But some fiddling can still generate a decent looking 3D
+structure
+
+``` r
+rd = illustration('illo',width = 256,height = 256 ,rotate = c(y =tau/15, x = -tau/15))
+colfunc <- colorRampPalette(c("gray60","gray20"))
+
+zAxis = seq(from = -25, to=25 ,by = 1)
+for(i in seq_along(zAxis)){
+    rd %<>%
+        svg_path_to_shape(svgWidth = 512,svgHeight = 512,
+                          translate = c(z = zAxis[i]),color = colfunc(length(zAxis))[i],
+                          stroke = 2,svgPath = path,scale = .7,fill =FALSE,closed = FALSE)
+}
+
+zAxis2 = seq(from = -15, to=15 ,by = 1)
+for(i in seq_along(zAxis2)){
+    rd %<>%
+        svg_path_to_shape(svgWidth = 512,svgHeight = 512,
+                          translate = c(z = zAxis2[i]),color = colfunc(length(zAxis))[zAxis %in% zAxis2[i]],
+                          stroke = 2,svgPath = path,scale = .7,fill =TRUE,closed = FALSE)
+}
+
+rd %>% save_image()
+```
+
+![](README_files/figure-gfm/threed_bishop-1.png)<!-- -->
 
 ## Use in shiny
 
