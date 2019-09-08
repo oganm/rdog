@@ -6,6 +6,14 @@
 \usage{
 animation_none(rdog = NULL, id = NULL, addTo = NULL)
 }
+\arguments{
+\item{rdog}{rdog object to add the animation to. Can be a character if called from a code block in shiny}
+
+\item{id}{Id of the animation. You should set this if you want to be able
+to check if this animation is running when getting inputs in a shiny app}
+
+\item{addTo}{Which element should this animation be added to. No effect on \code{animation_none} and can be ignored.}
+}
 \description{
 Just establishes the animation loop without actually moving anything. This
 is required if you called \code{\link{illustration}} with dragRotate = TRUE

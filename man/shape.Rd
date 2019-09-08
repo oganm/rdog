@@ -22,7 +22,7 @@ internal_shape(color = "#333", stroke = 1, fill = TRUE,
 \item{backface}{Logical. Should backface be visible or a color string to set a different
 color}
 
-\item{front.}{Determine where the front of the shape is to decide rendering backface color.
+\item{front}{Determine where the front of the shape is to decide rendering backface color.
 A vector with named x, y, z elements.}
 }
 \description{

@@ -1,4 +1,9 @@
-# FPS has to be a multiple of 10
+#' Record a gif from an illustration
+#'
+#' @param rdog rdog object
+#' @param file output file path for the gif file
+#' @param duration seconds to record
+#'
 #' @export
 record_gif = function(rdog,file = NULL, duration = 3){
 
@@ -85,7 +90,9 @@ record_gif = function(rdog,file = NULL, duration = 3){
 
     images = paste0(imageDir,'/',seq_along(frames)[-(1:3)],'.png')
 
-    animation = images %>% lapply(magick::image_read) %>% do.call(c,.) %>%
+    animation = images %>%
+        lapply(function(x){gc();magick::image_read(x)}) %>%
+        do.call(c,.) %>%
         magick::image_crop(glue::glue('{rdog$x$width}x{rdog$x$height}')) %>%
         magick::image_animate(fps = 10)
 
@@ -99,6 +106,13 @@ record_gif = function(rdog,file = NULL, duration = 3){
 
 }
 
+
+#' Save an image from an illustration
+#'
+#' @param rdog rdog object
+#' @param file output file path for the image file
+#'
+#' @export
 save_image = function(rdog, file = NULL){
 
     tags = htmltools::as.tags(rdog, standalone = TRUE)

@@ -2,7 +2,7 @@
 #'
 #' Add an elipse to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param diameter Diameter of the circle
 #' @param width,height Width and height of the ellipse. Overrides diameter
@@ -56,12 +56,21 @@ shape_ellipse = function(rdog = NULL,
     assertthat::assert_that(assertthat::is.number(quarters))
 
 
-    selfString = glue::glue(
-        'width: <width>,
-        height: <height>,
-        quarters: <quarters>',
-        .close = '>',.open = '<'
-    )
+    if(width == height && height == diameter){
+        selfString = glue::glue(
+            'diameter: <diameter>,
+             quarters: <quarters>',
+            .close = '>',.open = '<'
+        )
+    } else{
+        selfString = glue::glue(
+            'width: <width>,
+            height: <height>,
+            quarters: <quarters>',
+            .close = '>',.open = '<'
+        )
+    }
+
 
 
     fullString = glue::glue(
@@ -81,7 +90,7 @@ shape_ellipse = function(rdog = NULL,
 #'
 #' Add a rectangle to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param width,height Width and height of the rectangle.
 #' @inheritParams shape
@@ -152,7 +161,7 @@ shape_rect = function(
 #'
 #' Add a rectangle to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param width,height Width and height of the rectangle.
 #' @param cornerRadius Radius of the rounded corners
@@ -226,7 +235,7 @@ shape_roundedRect = function(
 #'
 #' Add a polygon to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param radius Size of the polygon
 #' @param sides Number of sides for the polygon
@@ -300,7 +309,7 @@ shape_polygon = function(
 #' Add a shape to an illustration defined by its path. If not path is
 #' provided, a point will be drawn.
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param path Path of the shape. A named list of instructions
 #' @inheritParams shape
@@ -376,7 +385,7 @@ shape_shape = function(
 #'
 #' Add a hemisphere to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param diameter Diameter of the circle
 #' @param height,width Height and width of the base circle.
@@ -452,7 +461,7 @@ shape_hemisphere = function(rdog = NULL,
 #'
 #' Add a cone to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param diameter Diameter of the base circle
 #' @param length length of the cone
@@ -523,7 +532,7 @@ shape_cone= function(rdog = NULL,
 #'
 #' Add a cylinder to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param diameter Diameter of the cylinder
 #' @param length of the cylinder
@@ -595,7 +604,7 @@ shape_cylinder= function(rdog = NULL,
 #'
 #' Add a box to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param width,height,depth Dimensions of the box
 #' @param frontFace,rearFace,leftFace,rightFace,topFace,bottomFace Face colors of the box. Set FALSE to remove
@@ -685,7 +694,7 @@ shape_box= function(rdog = NULL,
 
 
 #' Anchor
-#' @param rdog rdog object to add the anchor to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the anchor. If NULL, a random id will be assigned
 #' @inheritParams anchor
 #' @export
@@ -722,7 +731,7 @@ anchor = function(
 #'
 #' Add a cylinder to an illustration
 #'
-#' @param rdog rdog object to add the shape to
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
 #' @param updateSort
 #' @param visible

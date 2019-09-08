@@ -8,7 +8,8 @@ illustration(id = NULL, class = id, canvasID = id, width = 240,
   height = 240, background = "#FFDDBB", dragRotate = TRUE,
   centered = TRUE, zoom = 1, scale = 1, translate = c(x = 0, y = 0,
   z = 0), rotate = c(x = 0, y = 0, z = 0), resize = FALSE,
-  onResize = NULL, onPrerender = NULL, onDragStart = NULL)
+  onResize = NULL, onPrerender = NULL, onDragStart = NULL,
+  displayType = c("canvas", "svg"))
 }
 \arguments{
 \item{id}{Id of the object that will be used for the illustration}
@@ -46,6 +47,8 @@ into the function.}
 context will be passed as \code{context}}
 
 \item{onDragStart}{javascript code to execute on drag start.}
+
+\item{displayType}{type of display. canvas or svg}
 }
 \value{
 An empty zdog illustration.

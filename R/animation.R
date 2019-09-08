@@ -3,6 +3,11 @@
 #' Just establishes the animation loop without actually moving anything. This
 #' is required if you called \code{\link{illustration}} with dragRotate = TRUE
 #'
+#' @param rdog rdog object to add the animation to. Can be a character if called from a code block in shiny
+#' @param id Id of the animation. You should set this if you want to be able
+#' to check if this animation is running when getting inputs in a shiny app
+#' @param addTo Which element should this animation be added to. No effect on \code{animation_none} and can be ignored.
+#'
 #' @export
 animation_none = function(rdog = NULL,id = NULL, addTo = NULL){
 
@@ -32,7 +37,17 @@ animation_none = function(rdog = NULL,id = NULL, addTo = NULL){
 
 }
 
-
+#' Basic rotation
+#'
+#' Rotates the object at a given speed.
+#'
+#' @param rdog rdog object to add the animation to. Can be a character if called from a code block in shiny
+#' @param id Id of the animation. You should set this if you want to be able
+#' to check if this animation is running when getting inputs in a shiny app
+#' @param addTo Which element should this animation be added to. If NULL, animation
+#' will be set to the entire illustration.
+#' @param frames How many frames should the animation run for. Usefult for animations triggered in shiny applications
+#' @param rotate Rate of rotation per frame in radians.
 #' @export
 animation_rotate = function(rdog = NULL,
                             id = NULL,
@@ -66,6 +81,22 @@ animation_rotate = function(rdog = NULL,
     }
 }
 
+#' Eased in rotation
+#'
+#' Rotates the object smoothly
+#'
+#'
+#' @param rdog rdog object to add the animation to. Can be a character if called from a code block in shiny
+#' @param id Id of the animation. You should set this if you want to be able
+#' to check if this animation is running when getting inputs in a shiny app
+#' @param addTo Which element should this animation be added to. If NULL, animation
+#' will be set to the entire illustration.
+#' @param frames How many frames should the animation run for. Usefult for animations triggered in shiny applications
+#' @param framesPerCycle How many frames should a single eased in cycle take
+#' @param radiansPerCycle How many radians should the object rotate per cycle. By default a single cycle will
+#' cause a full rotation.
+#' @param rotateAxis Axis of rotation
+#' @param power Exponential power of the easing curve.
 #' @export
 animation_ease_in = function(rdog,
                              id = NULL,
@@ -76,6 +107,7 @@ animation_ease_in = function(rdog,
                              radiansPerCycle = tau,
                              rotateAxis = 'y',
                              power = 2){
+
 
     c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 

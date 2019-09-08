@@ -11,7 +11,7 @@ shape_cone(rdog = NULL, id = NULL, diameter = 1, length = 1,
   scale = c(x = 1, y = 1, z = 1))
 }
 \arguments{
-\item{rdog}{rdog object to add the shape to}
+\item{rdog}{rdog object to add the shape to. Can be a character if called from a code block in shiny}
 
 \item{id}{id of the shape. If NULL, a random id will be assigned}
 
@@ -31,6 +31,9 @@ shape_cone(rdog = NULL, id = NULL, diameter = 1, length = 1,
 
 \item{backface}{Logical. Should backface be visible or a color string to set a different
 color}
+
+\item{front}{Determine where the front of the shape is to decide rendering backface color.
+A vector with named x, y, z elements.}
 
 \item{addTo}{Id of the parent object. If an rdog object is piped and
 addTo is set to NULL, the default parent will be the illustration itself.}

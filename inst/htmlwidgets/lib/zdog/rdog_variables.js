@@ -57,10 +57,13 @@ Rdog_variables.utils.set_up_vars = function(id, add_to, illo_id){
 // and reduces the secondary counter to prevent the original animation
 // to terminate as well.
 Rdog_variables.utils.terminationCheck = function(id, frames){
-    if(Rdog_variables.animations[id] > 1 || frames<1){
+    if(Rdog_variables.animations[id] > 1 && frames == Infinity){
         Rdog_variables.animations[id] -=1;
         return true;
-    } else{
+    } else if(frames<1){
+        Rdog_variables.animations[id] -=1;
+        return true;
+    } else {
         return false;
     }
 
@@ -176,7 +179,6 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
         // record any changes to the original object and illustration
         Rdog_variables.animRotating_objects[add_to] = window[add_to];
         Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
-        console.log(Rdog_variables.animRotating_objects[add_to].rotate);
 
 
         window[illo_id].updateRenderGraph();
@@ -264,4 +266,38 @@ Rdog_variables.utils.processSVGData = function(path, svgWidth,svgHeight){
     return pathArrays;
 
 
+};
+
+
+Rdog_variables.utils.clicked = function(evt, type, id, height, width, centered){
+
+    if(type =='svg'){
+        var e = evt.target;
+        var dim = e.getBoundingClientRect();
+        var x = evt.clientX - dim.left;
+        var y = evt.clientY - dim.top;
+    } else if(type =='canvas'){
+        var e = evt.target;
+        var dim = e.getBoundingClientRect();
+        var x = evt.clientX - dim.left;
+        var y = evt.clientY - dim.top;
+    }
+
+    if(centered){
+        x = x - width/2
+        y = y -height/2
+    }
+
+    var message = {
+        x: x,
+        y: y,
+        nonce: Math.random(),
+        animations: Rdog_variables.animations
+    }
+
+    if("Shiny" in window){
+        Shiny.onInputChange(id,message);
+    }
+
+    console.log('x: '+x+' y:'+y);
 };

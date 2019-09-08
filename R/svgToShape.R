@@ -1,3 +1,15 @@
+#' Shape from an svg path
+#'
+#' Create a shape from an svg path
+#'
+#' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
+#' @param id id of the shape. If NULL, a random id will be assigned
+#' @param svgPath Path data from svg
+#' @param svgWidth,svgHeight Full width and height of the svg path. Used for centering.
+#' @inheritParams shape
+#' @inheritParams anchor
+#'
+#' @export
 svg_path_to_shape = function(rdog = NULL,
                        id = NULL,
                        svgPath,

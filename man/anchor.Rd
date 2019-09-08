@@ -23,7 +23,7 @@ on \code{addTo} parameter. A vector with named x, y, z elements.}
 
 \item{scale}{Scale dimensons. Can be an unnamed integer or a vector with named x, y ,z elements}
 
-\item{rdog}{rdog object to add the anchor to}
+\item{rdog}{rdog object to add the shape to. Can be a character if called from a code block in shiny}
 
 \item{id}{id of the anchor. If NULL, a random id will be assigned}
 }

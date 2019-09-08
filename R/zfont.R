@@ -1,4 +1,11 @@
-
+#' Create a zfont
+#'
+#' Create a zfont that can be used to add text to an illustration
+#'
+#' @param rdog rdog object to add the font to.
+#' @param id id of the font
+#' @param font file path to the ttf file that will be used
+#' @export
 zfont_font = function(rdog = NULL,
                       id,
                       font = system.file('fonts/Roboto-Regular.ttf',package = 'rdog')){
@@ -27,6 +34,21 @@ zfont_font = function(rdog = NULL,
     return(rdog)
 }
 
+
+#' Add text to illustration
+#'
+#' Use a zfont to add text to an illustration
+#'
+#' @param rdog rdog object to add the text to. Can be a character if called from a code block in shiny
+#' @param id id of the shape. If NULL, a random id will be assigned
+#' @param zfont id of the zfont to be used
+#' @param fontSize font size of the text. Measured in pixels
+#' @param textAlign  Horizontal text alignment, equivalent to the CSS text-align property. This can be either 'left', 'center' or 'right'
+#' @param textBaseline Vertical text alignment, equivalent to the HTML5 canvas' textBaseline property. This can be either 'top', 'middle' or 'bottom'
+#' @inheritParams shape
+#' @inheritParams anchor
+#'
+#' @export
 zfont_text = function(rdog = NULL,
                       id = NULL,
                       zfont,

@@ -24,6 +24,7 @@ tau = 2*pi
 #' @param onPrerender javascript code to execute on pre-render. canvas
 #' context will be passed as \code{context}
 #' @param onDragStart javascript code to execute on drag start.
+#' @param displayType type of display. canvas or svg
 #'
 #' @return An empty zdog illustration.
 #' @export
@@ -42,7 +43,10 @@ illustration = function(id = NULL,
                         resize = FALSE,
                         onResize = NULL,
                         onPrerender = NULL,
-                        onDragStart = NULL){
+                        onDragStart = NULL,
+                        displayType = c('canvas', 'svg')){
+
+    displayType = match.arg(displayType)
 
 
     if(is.null(id)){
@@ -101,7 +105,9 @@ illustration = function(id = NULL,
         height = height,
         background = background,
         components = list(),
-        fonts = list()
+        fonts = list(),
+        displayType = displayType,
+        centered = centered
     )
 
     # create the widget

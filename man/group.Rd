@@ -9,7 +9,7 @@ group(rdog = NULL, id = NULL, addTo = NULL, updateSort = FALSE,
   0, y = 0, z = 0), scale = c(x = 1, y = 1, z = 1))
 }
 \arguments{
-\item{rdog}{rdog object to add the shape to}
+\item{rdog}{rdog object to add the shape to. Can be a character if called from a code block in shiny}
 
 \item{id}{id of the shape. If NULL, a random id will be assigned}
 
