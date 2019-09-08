@@ -317,6 +317,8 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
+![](basicApp.gif)
+
 Note that in the example above, the diameter control did not have to have it's own `observe` block. We could have set `diameter = input$slider` within the `renderRdog` function as well. However, this would have caused the entire
 illustration to be re-created at each manipulation of the slider. Not great for performance
 
@@ -359,3 +361,4 @@ server <- function(input, output) {
 }
 shinyApp(ui = ui, server = server)
 ```
+![](toggle.gif)

@@ -235,7 +235,7 @@ elmat = matrix(raster::extract(localtif, raster::extent(localtif), buffer = 1000
                nrow = ncol(localtif), ncol = nrow(localtif))
 
 # scale values to be between -50 and 50 to match the z coordinates they'll get
-elmat %<>% ogbox::scaleToInt(50,-50)
+elmat %<>% scaleToInt(-50,50)
 contours = contourLines(z = elmat, nlevels = 30)
 
 # get contour levels
@@ -340,6 +340,8 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
+![](basicApp.gif)
+
 Note that in the example above, the diameter control did not have to
 have it’s own `observe` block. We could have set `diameter =
 input$slider` within the `renderRdog` function as well. However, this
@@ -387,3 +389,5 @@ server <- function(input, output) {
 }
 shinyApp(ui = ui, server = server)
 ```
+
+![](toggle.gif)
