@@ -70,7 +70,7 @@ r = 120
     return(c(x = x ,y = y))
 }) -> polyEdges
 
-illustration('illo',width = 260,height = 260,dragRotate = TRUE) %>%
+illustration('illo',width = 260,height = 260,dragRotate = TRUE,displayType = 'svg') %>%
     # shape_polygon(id = 'hex',sides = 6, stroke = 10,radius = 120,fill = FALSE,color = '#636') %>%
     anchor(id = 'hexAnchor',rotate = c(z=tau/12)) %>%
     shape_shape(id = 'hex1',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[1:2]) %>%
@@ -121,7 +121,10 @@ illustration('illo',width = 260,height = 260,dragRotate = TRUE) %>%
                                        c(y = 25, x = 10, z = 0))),rotate= c(x = tau/8)) %>%
     zfont_font(id = 'font') %>%
     zfont_text(zfont = 'font',text = 'rdog',color = '#E62',stroke = 2,fontSize = 35,translate = c(y = 85),textAlign = 'center')   %>%
-    ## animation_none()
+    animation_none()
     # animation_ease_in(framesPerCycle = 120,pause = 120, power = 100,rotateAxis = 'y') %>% record_gif(file = 'logo.gif', duration = 15)
     animation_ease_in(framesPerCycle = 200,pause = 300, power = 30,rotateAxis = 'y')# %>%
     record_gif(file = 'logo.gif',duration = 7)
+
+
+

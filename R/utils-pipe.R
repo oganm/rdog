@@ -19,3 +19,29 @@ NULL
 
 #' @importFrom zeallot %<-%
 NULL
+
+
+
+#' Scale a vector to lie between a set interval
+#'
+#' A utility function to scale vectors to specific intervals.
+#'
+#' @param x vector to be scaled
+#' @param min minimum value of the new interval
+#' @param max maximum value of the new interval
+#' @export
+scaleToInt = function(x, min,max){
+    scaleFun = scaleIntervals(max(x,na.rm = TRUE),min(x, na.rm=TRUE),max,min)
+    scaleFun(x)
+}
+
+scaleIntervals = function(max,min,maxOut,minOut){
+    a = (max - min)/(maxOut - minOut)
+    b = max - maxOut*a
+    if(a != 0){
+        return(teval(paste0("function(x){(x - ",b,")/",a,'}')))
+    }else{
+        mean = (maxOut - minOut)/2
+        return(teval(paste0("function(x){x[] = ",mean,";return(x)}")))
+    }
+}

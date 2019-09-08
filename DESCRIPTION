@@ -1,7 +1,7 @@
 Package: rdog
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Title: R port of the zdog pseudo-3D rendering engine
+Version: 1.0.0.9000
+Authors@R: person("Ogan", "Mancarci", email = "ogan.mancarci@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
@@ -9,7 +9,6 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     htmltools,
-    ogbox,
     assertthat,
     magrittr,
     shinyjs,
@@ -21,6 +20,5 @@ Imports:
     zeallot,
     shinyjs
 Remotes:
-    oganm/ogbox,
     rstudio/chromote
 RoxygenNote: 6.1.1

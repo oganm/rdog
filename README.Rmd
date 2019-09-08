@@ -215,7 +215,7 @@ elmat = matrix(raster::extract(localtif, raster::extent(localtif), buffer = 1000
                nrow = ncol(localtif), ncol = nrow(localtif))
 
 # scale values to be between -50 and 50 to match the z coordinates they'll get
-elmat %<>% ogbox::scaleToInt(50,-50)
+elmat %<>% scaleToInt(-50,50)
 contours = contourLines(z = elmat, nlevels = 30)
 
 # get contour levels
