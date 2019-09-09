@@ -5,11 +5,12 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      fig.path = "man/figures")
 devtools::load_all()
 ```
 
-# Rdog <img src="logo.gif" align="right" height="150"/>
+# Rdog <img src="man/figures/logo.gif" align="right" height="150"/>
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.
@@ -261,7 +262,7 @@ rdog %>%
     animation_rotate(rotate = c(y = .01)) %>% 
     record_gif(duration = 12, file = 'elmat.gif')
 ```
-![](elmat.gif)
+![](man/figures/elmat.gif)
 
 
 ## Use in shiny
@@ -317,7 +318,7 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-![](basicApp.gif)
+![](man/figures/basicApp.gif)
 
 Note that in the example above, the diameter control did not have to have it's own `observe` block. We could have set `diameter = input$slider` within the `renderRdog` function as well. However, this would have caused the entire
 illustration to be re-created at each manipulation of the slider. Not great for performance
@@ -361,4 +362,4 @@ server <- function(input, output) {
 }
 shinyApp(ui = ui, server = server)
 ```
-![](toggle.gif)
+![](man/figures/toggle.gif)

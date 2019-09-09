@@ -1,5 +1,5 @@
 
-# Rdog <img src="logo.gif" align="right" height="150"/>
+# Rdog <img src="man/figures/logo.gif" align="right" height="150"/>
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.
@@ -90,7 +90,7 @@ illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>%
     record_gif(duration = 10)
 ```
 
-![](README_files/figure-gfm/cornell_box-1.gif)<!-- -->
+![](man/figurescornell_box-1.gif)<!-- -->
 
 `record_gif` is not required for interactive usage or html renderings.
 By default, the output is an htmlwidget, that can be automatically
@@ -108,7 +108,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+![](man/figuresunnamed-chunk-1-1.png)<!-- -->
 
 `copy` and `copyGraph` functions can be used to duplicate objects.
 `copyGraph` will also copy any children object that an object has. You
@@ -123,7 +123,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](man/figuresunnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 illustration('illo') %>% 
@@ -133,7 +133,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](man/figuresunnamed-chunk-3-1.png)<!-- -->
 
 ## Rendering SVG paths
 
@@ -153,7 +153,7 @@ illustration('illo',width = 256,height = 256) %>%
     save_image()
 ```
 
-![](README_files/figure-gfm/bishop-1.png)<!-- -->
+![](man/figuresbishop-1.png)<!-- -->
 
 `stroke` variable can be used to give some depth to svg
 paths.
@@ -164,7 +164,7 @@ illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)
     save_image()
 ```
 
-![](README_files/figure-gfm/stroke_bishop-1.png)<!-- -->
+![](man/figuresstroke_bishop-1.png)<!-- -->
 
 Note that setting `fill = TRUE` will cause you to lose enclosed shapes
 in an svg
@@ -176,7 +176,7 @@ illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)
     save_image()
 ```
 
-![](README_files/figure-gfm/fill_bishop-1.png)<!-- -->
+![](man/figuresfill_bishop-1.png)<!-- -->
 
 But some fiddling can still generate a decent looking 3D
 structure
@@ -204,7 +204,7 @@ for(i in seq_along(zAxis2)){
 rd %>% save_image()
 ```
 
-![](README_files/figure-gfm/threed_bishop-1.png)<!-- -->
+![](man/figuresthreed_bishop-1.png)<!-- -->
 
 ## Rendering maps
 
@@ -282,7 +282,7 @@ rdog %>%
     record_gif(duration = 12, file = 'elmat.gif')
 ```
 
-![](elmat.gif)
+![](man/figures/elmat.gif)
 
 ## Use in shiny
 
@@ -340,7 +340,7 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-![](basicApp.gif)
+![](man/figures/basicApp.gif)
 
 Note that in the example above, the diameter control did not have to
 have it’s own `observe` block. We could have set `diameter =
@@ -390,4 +390,4 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-![](toggle.gif)
+![](man/figures/toggle.gif)
