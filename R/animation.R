@@ -55,21 +55,26 @@ animation_rotate = function(rdog = NULL,
                             frames = Inf,
                             rotate = c(x = 0, y = 0, z = 0)){
 
+    # standard processing of rdog inputs.
     c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
 
+    # in javascript, Infinity is Inf
     if(is.infinite(frames)){
         frames = 'Infinity'
     }
 
+    # preparing the input arguments
     coords = c('x','y','z')
     rotate[coords[!coords %in% names(rotate)]] = 0
 
+    # create the animation script. this will run the javascript code for the animation function
     animationScript = glue::glue(
         '
         Rdog_variables.built_in.animation_rotate("<id>","<addTo>","<illoId>",<frames>,<rotate["x"]>,<rotate["y"]>,<rotate["z"]>);
         ',.open = '<',.close = '>')
 
 
+    # standard processing of rdog outputs
     if('htmlwidget' %in% class(rdog)){
         rdog$x$jsCode %<>% paste0('\n',animationScript)
         return(rdog)

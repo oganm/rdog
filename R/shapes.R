@@ -733,8 +733,9 @@ anchor = function(
 #'
 #' @param rdog rdog object to add the shape to. Can be a character if called from a code block in shiny
 #' @param id id of the shape. If NULL, a random id will be assigned
-#' @param updateSort
-#' @param visible
+#' @param updateSort Should the sorting order within the group be updated. If FALSE, all members of the
+#' group will be rendered in the order they were added
+#' @param visible Is the group visible
 #' @inheritParams anchor
 #'
 #' @export

@@ -16,6 +16,11 @@ group(rdog = NULL, id = NULL, addTo = NULL, updateSort = FALSE,
 \item{addTo}{Id of the parent object. If an rdog object is piped and
 addTo is set to NULL, the default parent will be the illustration itself.}
 
+\item{updateSort}{Should the sorting order within the group be updated. If FALSE, all members of the
+group will be rendered in the order they were added}
+
+\item{visible}{Is the group visible}
+
 \item{translate}{Position relative to the origin. Origin point is defined based
 on \code{addTo} parameter. A vector with named x, y, z elements.}
 

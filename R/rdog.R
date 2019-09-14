@@ -107,7 +107,12 @@ illustration = function(id = NULL,
         components = list(),
         fonts = list(),
         displayType = displayType,
-        centered = centered
+        centered = centered,
+        zoom = zoom,
+        scale = scale,
+        translate = as.list(translate),
+        rotate = as.list(rotate),
+        resize = resize
     )
 
     # create the widget

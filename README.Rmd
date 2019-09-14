@@ -15,6 +15,19 @@ devtools::load_all()
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
 Currently a work in progres.
 
+Table of Contents
+=================
+
+* [Installation](#installation)
+* [Why?](#why)
+* [Basic usage](#basic-usage)
+* [Rendering SVG paths](#rendering-svg-paths)
+* [Rendering STL files](#rendering-stl-files)
+* [Rendering maps](#rendering-maps)
+* [Use in shiny](#use-in-shiny)
+* [Use as shiny inputs](#use-as-shiny-inputs)
+* [Todo](#todo)
+
 ## Installation
 
 ``` r
@@ -189,6 +202,26 @@ rd %>% save_image()
 
 ```
 
+
+## Rendering STL files
+
+ASCII stl files can be read and rendered using the `stl_to_shape` function. Note that
+adding objects with too many polygons will likely hurt performance drastically.
+
+```{r}
+stl = readLines(system.file('GEB.stl',package = 'rdog')) %>% paste(collapse = '\n')
+
+stl_bounds = get_stl_bounds(stl)
+
+# we need to subtract 20 from the z axis to center this file
+stl_bounds
+
+illustration(width = 150,height = 150,dragRotate = TRUE,displayType = 'canvas',scale = 2,rotate = c(y = tau/2)) %>%
+  stl_to_shape(stl = stl,colorAxis = 'z', translate = c(z = -20),stroke = 1) %>% 
+  animation_rotate(rotate =c(y = .01,x = .01)) %>% record_gif(duration = 5)
+
+```
+
 ## Rendering maps
 
 rdog's probably not the best tool for this but here's a contour based visualization.
@@ -331,6 +364,12 @@ be set to a list that contains `x` and `y` coordinates of the mouse relative to 
 value to force trigger updates. This allows you to use rdog illustrations as buttons or make them interactive. A list of all
 active animations is also returned in the input which allows one to avoid triggering the same animation multiple times.
 
+If the `displayType` is a `canvas` and you click on an object, you'll also get a non-zero `objectId` for the
+object you clicked. Object ids start from 1 and incremented in the order you add the new elements. Note that objects
+created with single commands may occupy multiple ids for their different sides so you may have to experiment a little. For instance the ellipse below has two different IDs for its two sides. Text added by `zfont_text` has no object ids and clicking
+on text will return the id of the object below that text if there is any. If you want to detect text,
+you can create a transparent (not invisible) shape that encompasses the text and use that id instead.
+
 ```r
 library(shiny)
 devtools::load_all()
@@ -343,7 +382,7 @@ ui <- fluidPage(
 server <- function(input, output) {
     output$check = renderRdog({
         illustration('illo',height = 100, width = 100,dragRotate = FALSE) %>% 
-            shape_ellipse(diameter = 80, color = 'green', backface = 'red') %>% 
+            shape_ellipse(diameter = 80, color = 'green', backface = 'red',stroke = 4) %>% 
             zfont_font(id= 'font') %>% 
             zfont_text(zfont = 'font', text = "YES",color = 'white',textAlign = 'center',fontSize = 30,translate = c(z = 20, y = 10),stroke = 2) %>% 
             zfont_text(zfont = 'font', text = "NO",color = 'white',textAlign = 'center',fontSize = 30,rotate = c(y = pi),translate = c(z = -20, y = 10),stroke = 2)
@@ -354,12 +393,165 @@ server <- function(input, output) {
         
         if(!is.null(input$check)){
             if(is.null(input$check$animations$ease) || input$check$animations$ease == 0){
-                animation_ease_in(id = 'ease',rdog = 'illo',frames = 120,radiansPerCycle = tau/2,addTo='illo',framesPerCycle = 120,power = 3)
+                animation_ease_in(id = 'ease',rdog = 'illo',frames = 60,radiansPerCycle = tau/2,addTo='illo',framesPerCycle = 60,power = 3)
             }
-            paste("x: ",input$check$x,'y:', input$check$y) 
+            paste("x: ",input$check$x,'y:', input$check$y, "object:", input$check$objectId) 
         }
     })
 }
 shinyApp(ui = ui, server = server)
 ```
 ![](man/figures/toggle.gif)
+
+## Anatomy of an animation
+
+Bulk of animating is handled by javascript. If you want to write your custom animations, you'll also want to use
+javascript even though it is technically possible to handle it in R by using `updateProperty`. Handling animations
+through javascript will be lighter on the R session and offload that job to the browser.
+
+Below is the R code for `animation_rotate`
+
+```r
+animation_rotate = function(rdog = NULL,
+                            id = NULL,
+                            addTo = NULL,
+                            frames = Inf,
+                            rotate = c(x = 0, y = 0, z = 0)){
+
+    # standard processing of rdog inputs.
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
+
+    # in javascript, Infinity is Inf
+    if(is.infinite(frames)){
+        frames = 'Infinity'
+    }
+    
+    # preparing the input arguments
+    coords = c('x','y','z')
+    rotate[coords[!coords %in% names(rotate)]] = 0
+    
+    # create the animation script. this will run the javascript code for the animation function
+    animationScript = glue::glue(
+        '
+        Rdog_variables.built_in.animation_rotate("<id>","<addTo>","<illoId>",<frames>,<rotate["x"]>,<rotate["y"]>,<rotate["z"]>);
+        ',.open = '<',.close = '>')
+
+
+    # standard processing of rdog outputs 
+    if('htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',animationScript)
+        return(rdog)
+    } else if(is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(animationScript)
+        }
+        animationScript
+    }
+}
+```
+
+Most of this can be copied and re-used for another animation function as it 
+is standardized. You need to change the input variables needed for your animation
+function and that is about it. The javascript end is a little more complicated.
+
+
+```js
+Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames, x, y, z){
+    // standard set-up
+    Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
+
+    Rdog_variables.animFuns[id] = function(){
+
+        if(Rdog_variables.utils.terminationCheck(id, frames)){
+            return;
+        }
+        frames -= 1;
+
+        window[add_to].rotate.x += x;
+        window[add_to].rotate.y += y;
+        window[add_to].rotate.z += z;
+
+        // record any changes to the original object
+        Rdog_variables.animRotating_objects[add_to] = window[add_to];
+        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+
+
+        window[illo_id].updateRenderGraph();
+        requestAnimationFrame( Rdog_variables.animFuns[id] );
+    };
+    Rdog_variables.animFuns[id]();
+
+};
+```
+
+In the code above `Rdog_variables.utils.set_up_vars` is a utility function that sets up some memory
+for the animation and tries to re-create the animation state if the animation is re-called.
+This is needed because changes to rdog objects in reactive shiny settings will re-create the whole
+illustration, resetting rotation and translation states. After that a function is defined to deal with
+the animation frame by frame. Each function should start with
+
+```js
+if(Rdog_variables.utils.terminationCheck(id, frames)){
+  return;
+}
+frames -= 1;
+```
+
+The if clause checks whether or not animation should be terminated. An animation
+loop is terminated if `frames` reaches 0 or another animation with the same ID is launched.
+This prevents more animation loops to be created whenever there is an update to a illustration
+in a reactive context, progressively increasing animation speed.
+
+
+The next lines apply a single frame of animation to the target object
+```js
+window[add_to].rotate.x += x;
+window[add_to].rotate.y += y;
+window[add_to].rotate.z += z;
+```
+
+After each frame the whole illustration and the target object is saved to `Rdog_variables.animRotating_objects`.
+These variables are used by `Rdog_variables.utils.set_up_vars` to restore animation state on a reset. 
+
+```js
+Rdog_variables.animRotating_objects[add_to] = window[add_to];
+Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+```
+
+The next two lines create the infinite loop for the animation. They should be at the end of
+every animation function
+
+```js
+window[illo_id].updateRenderGraph();
+requestAnimationFrame( Rdog_variables.animFuns[id] );
+```
+
+And finally the function is called to start the animation loop
+
+```js
+Rdog_variables.animFuns[id]();
+```
+
+Currently all existing animations work by counting frames which may cause objects to have variable speeds in 
+different machines . I will be adding options to control the
+time passed instead of frame rates. If you want to do this yourself, you need to decrement time instead of frames and pass the remaining time to `Rdog_variables.utils.terminationCheck` 
+instead of frames. You should ensure that your animation has reached it's final stage 
+before the time counter reaches 0, for instance if a full radian turn is
+requested, the turn should complete before termination. A possible way to do this is manually setting the object properties to the expected result 
+if the timer becomes negative. Still thinking of the best way to implement that
+myself.
+
+## Notes
+
+- Care should be taken when naming objects. Currently every object gets a variable under `window`. Good for easy manipulation, not great for collusions and stuff. If you name any element `Zdog` for instance whole thing
+goes down so you should make sure that you are not colliding with any existing javascript object.
+
+## Todo
+
+- `addChild`, `removeChild` and `remove` methods
+- Time based animations instead of frame count based ones. 
+- animation that move instead of rotate
+- A basic framework for custom animations
+- Return more information about the state of the canvas (eg. properties of objects under effect of )
+- Framework for custom draggers
+- A way to keep the `window` cleaner.

@@ -274,3 +274,29 @@ process_all_input_types = function(inputName, input){
     }
     return(out)
 }
+
+#' @export
+get_stl_bounds = function(stl){
+    stlLines = stl %>% strsplit('\n') %>% {.[[1]]}
+
+    lapply(stlLines, function(x){
+        if(grepl('vertex',x)){
+            coords = stringr::str_extract_all(x, '[-+]?([0-9]*\\.[0-9]+|[0-9]+)') %>% {.[[1]]} %>% as.numeric()
+            names(coords) = c('x','y','z')
+            return(coords)
+        } else{
+            return(NULL)
+        }
+    }) %>% {.[!sapply(.,is.null)]} -> coordinates
+
+    xs = coordinates %>% purrr::map_dbl('x')
+    ys = coordinates %>% purrr::map_dbl('y')
+    zs = coordinates %>% purrr::map_dbl('z')
+
+    list(
+        x = c(min(xs),max(xs)),
+        y = c(min(ys), max(ys)),
+        z = c(min(zs),max(zs))
+    )
+
+}
