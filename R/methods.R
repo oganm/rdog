@@ -168,15 +168,89 @@ copyGraph = function(rdog = NULL, id, what, ...){
 }
 
 
-# addChild = function(rdog = NULL, to, what){
-#
-# }
-
-# removeChild = function(rdog = NULL, from, what){
-#
-# }
+#' Add child item
+#' @export
+addChild = function(rdog = NULL, to, what){
+    assertthat::assert_that(assertthat::is.string(what))
+    assertthat::assert_that(assertthat::is.string(to))
 
 
-# remove = function(rdog = NULL, what){
-#
-# }
+    commandString = glue::glue(
+        "
+        <to>.addChild(<what>);
+        ",
+        .open = '<',.close = '>')
+
+    if(!is.null(rdog) && 'htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',commandString)
+        return(rdog)
+
+    } else if(is.null(rdog) || is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(commandString)
+            if(is.character('rdog')){
+                shinyjs::runjs(glue::glue("{rdog}.updateRenderGraph()"))
+            }
+        }
+        return(commandString)
+    }
+
+}
+
+
+#' Remove child item
+#' @export
+removeChild = function(rdog = NULL, from, what){
+    assertthat::assert_that(assertthat::is.string(what))
+    assertthat::assert_that(assertthat::is.string(from))
+
+
+
+    commandString = glue::glue(
+        "
+        <from>.removeChild(<what>);
+        ",
+        .open = '<',.close = '>')
+
+    if(!is.null(rdog) && 'htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',commandString)
+        return(rdog)
+
+    } else if(is.null(rdog) || is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(commandString)
+            if(is.character('rdog')){
+                shinyjs::runjs(glue::glue("{rdog}.updateRenderGraph()"))
+            }
+        }
+        return(commandString)
+    }
+}
+
+
+#' Remove element from parent
+#' @export
+remove = function(rdog = NULL, what){
+    assertthat::assert_that(assertthat::is.string(what))
+
+
+    commandString = glue::glue(
+        "
+        <what>.remove();
+        ",
+        .open = '<',.close = '>')
+
+    if(!is.null(rdog) && 'htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',commandString)
+        return(rdog)
+
+    } else if(is.null(rdog) || is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(commandString)
+            if(is.character('rdog')){
+                shinyjs::runjs(glue::glue("{rdog}.updateRenderGraph()"))
+            }
+        }
+        return(commandString)
+    }
+}

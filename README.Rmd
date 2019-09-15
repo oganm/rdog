@@ -550,7 +550,6 @@ goes down so you should make sure that you are not colliding with any existing j
 
 ## Todo
 
-- `addChild`, `removeChild` and `remove` methods
 - Time based animations instead of frame count based ones. 
 - animation that move instead of rotate
 - A basic framework for custom animations
