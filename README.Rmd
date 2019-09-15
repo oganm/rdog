@@ -6,7 +6,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
-                      fig.path = "man/figures")
+                      fig.path = "man/figures/")
 devtools::load_all()
 ```
 
@@ -27,6 +27,8 @@ Table of Contents
 * [Use in shiny](#use-in-shiny)
 * [Use as shiny inputs](#use-as-shiny-inputs)
 * [Todo](#todo)
+* [Rdog hex logo](#rdog-hex-logo)
+
 
 ## Installation
 
@@ -113,7 +115,7 @@ with github_document's due to restrictions on github so rendering into a gif or 
 
 `anchors` are invisible elements that one can add shapes to and be used as a reference point.
 
-```{r}
+```{r anchor}
 illustration('illo') %>% 
   anchor(id ='anchor', translate = c(x = 100)) %>% 
   shape_shape(addTo = 'anchor', translate = c(y = - 100), stroke = 20) %>% 
@@ -124,7 +126,7 @@ illustration('illo') %>%
  will also copy any children object that an object has. You can change properties
  of the object you copy by passing additional arguments.
  
-```{r}
+```{r copy}
 illustration('illo') %>% 
   shape_shape(id ='point1', translate = c(x = 100),stroke = 20, color = 'blue') %>% 
   shape_shape(addTo = 'point1', translate = c(y = - 100), stroke = 20, color = 'red') %>%
@@ -132,7 +134,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-```{r}
+```{r copyGraph}
 illustration('illo') %>% 
   shape_shape(id ='point1', translate = c(x = 100),stroke = 20, color = 'blue') %>% 
   shape_shape(addTo = 'point1', translate = c(y = - 100), stroke = 20, color = 'red') %>%
@@ -208,7 +210,7 @@ rd %>% save_image()
 ASCII stl files can be read and rendered using the `stl_to_shape` function. Note that
 adding objects with too many polygons will likely hurt performance drastically.
 
-```{r}
+```{r stl}
 stl = readLines(system.file('GEB.stl',package = 'rdog')) %>% paste(collapse = '\n')
 
 stl_bounds = get_stl_bounds(stl)
@@ -555,3 +557,86 @@ goes down so you should make sure that you are not colliding with any existing j
 - Return more information about the state of the canvas (eg. properties of objects under effect of )
 - Framework for custom draggers
 - A way to keep the `window` cleaner.
+
+
+## Rdog hex logo
+
+Rdog hex logo is also made in rdog.
+
+
+```{r rdog}
+# create polygon lines
+r = 120
+1:6 %>% lapply(function(i){
+    x = r * cos(2*pi*i/6)
+    y = r * sin(2*pi*i/6)
+    return(c(x = x ,y = y))
+}) -> polyEdges
+
+illustration(width = 250,height = 250) %>%
+  # i use individual shapes instead of a polygon because polygon edges do not 
+  # z fight correctly and appear below the dog head on a sideway view.
+  # shape_polygon(id = 'hex',sides = 6, stroke = 10,radius = 120,fill = FALSE,color = '#636') %>%
+  anchor(id = 'hexAnchor',rotate = c(z=tau/12)) %>% # rotate the hex to appear the right angle
+  shape_shape(id = 'hex1',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[1:2]) %>%
+  shape_shape(id = 'hex2',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[2:3]) %>%
+  shape_shape(id = 'hex3',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[3:4]) %>%
+  shape_shape(id = 'hex3',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[4:5]) %>%
+  shape_shape(id = 'hex4',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[5:6]) %>%
+  shape_shape(id = 'hex4',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[c(6,1)]) %>%
+  # create an anchor for the dog head and shit it up and move it to the front a little.
+  # create a second anchor to rotate a little. if I added the rotation to the previous 
+  # anchor, it would be rotating over the origin point.
+  anchor(id='dogMainAnchor', translate =  c(y = -10,z = 50)) %>%
+  anchor(id = 'dogAnchor',addTo = 'dogMainAnchor',translate = c(x = -10),rotate = c(y = 1*pi/16)) %>%
+  # dogs nose
+  shape_box(id = 'headFront',
+            addTo = 'dogAnchor',
+            width = 40, depth = 20,height =25,
+            stroke = 10,leftFace = '#EA0', rightFace = '#EA0', color = '#E62',
+            translate = c(z = -10, y = 5)) %>%
+  # dogs head
+  shape_box(id = 'headBack',
+            addTo = 'dogAnchor',
+            width = 50, depth = 40,height =60,
+            stroke = 10,leftFace = '#EA0', rightFace = '#EA0', color = '#E62',
+            translate = c(z = -50)) %>%
+  # create a group for the eye to control their z-fighting
+  group(id ='eyeGroup',addTo='dogAnchor') %>%
+  shape_shape(id = 'leftEye', addTo = 'eyeGroup',color= '#636',
+              translate = c(y = -20, z= -20, x = -20),stroke = 10) %>%
+  # copy the leftEye to create the right eye
+  copy(id = 'rightEye',what = 'leftEye', translate = c(y = -20, z = -20, x = 20)) %>% 
+  # a boopable snoot
+  shape_ellipse(id = 'nose', addTo = 'dogAnchor',color = '#636f',
+                quarters = 2, translate = c(z = 10) ,diameter = 20,
+                stroke = 10,rotate = c(z = tau/4)) %>%
+  # an anchor for ears
+  anchor(id = 'mainEarAnchor',addTo = 'dogAnchor',
+         translate = c(y = -20, z = -45)) %>%
+  # an anchor for left ear to control poisition and rotation
+  anchor(id = 'leftEarAnchor', addTo = 'mainEarAnchor', 
+         translate = c(x = -40),rotate = c(z = tau/16)) %>%
+  # create left ear
+  shape_ellipse(id = 'leftEar', addTo = 'leftEarAnchor', color = '#636', quarters = 2,
+                diameter = 40,
+                stroke = 10, rotate = c(y = -tau/4, x = -tau/16, z = -tau/16)) %>%
+  # copy the leftEarAnchor and the ear itself and flip it around to make the right ear
+  copyGraph(id = 'rightEarAnchor', what = 'leftEarAnchor', translate = c(x = 40),
+            rotate = c(z = -tau/16)) %>% 
+  # code for the tongue
+  anchor(id = 'tongueAnchor',addTo = 'dogAnchor',translate = c(z = -20,y = 25)) %>%
+  shape_shape(addTo = 'tongueAnchor', id = 'tongue',stroke = 10, color = '#636',
+              path = list(c(y = 0,x = 10,z = 0),
+                          c(y = 0, x = -10,z = 0),
+                          c(y = 25, x = -10, z = 0),
+                          arc = list(c(y = 35, x = 0, z = 0),
+                                     c(y = 25, x = 10, z = 0))),
+              rotate= c(x = tau/8)) %>%
+  # add the font and the text
+  zfont_font(id = 'font') %>%
+  zfont_text(zfont = 'font',text = 'rdog',color = '#E62',
+             stroke = 2,fontSize = 35,translate = c(y = 85),
+             textAlign = 'center') %>% 
+  save_image()
+```

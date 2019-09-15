@@ -15,6 +15,7 @@ Currently a work in progres.
   - [Use in shiny](#use-in-shiny)
   - [Use as shiny inputs](#use-as-shiny-inputs)
   - [Todo](#todo)
+  - [Rdog hex logo](#rdog-hex-logo)
 
 ## Installation
 
@@ -102,7 +103,7 @@ illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>%
     record_gif(duration = 10)
 ```
 
-![](man/figurescornell_box-1.gif)<!-- -->
+![](man/figures/cornell_box-1.gif)<!-- -->
 
 `record_gif` is not required for interactive usage or html renderings.
 By default, the output is an htmlwidget, that can be automatically
@@ -120,7 +121,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](man/figuresunnamed-chunk-1-1.png)<!-- -->
+![](man/figures/anchor-1.png)<!-- -->
 
 `copy` and `copyGraph` functions can be used to duplicate objects.
 `copyGraph` will also copy any children object that an object has. You
@@ -135,7 +136,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](man/figuresunnamed-chunk-2-1.png)<!-- -->
+![](man/figures/copy-1.png)<!-- -->
 
 ``` r
 illustration('illo') %>% 
@@ -145,7 +146,7 @@ illustration('illo') %>%
   save_image()
 ```
 
-![](man/figuresunnamed-chunk-3-1.png)<!-- -->
+![](man/figures/copyGraph-1.png)<!-- -->
 
 ## Rendering SVG paths
 
@@ -165,7 +166,7 @@ illustration('illo',width = 256,height = 256) %>%
     save_image()
 ```
 
-![](man/figuresbishop-1.png)<!-- -->
+![](man/figures/bishop-1.png)<!-- -->
 
 `stroke` variable can be used to give some depth to svg
 paths.
@@ -176,7 +177,7 @@ illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)
     save_image()
 ```
 
-![](man/figuresstroke_bishop-1.png)<!-- -->
+![](man/figures/stroke_bishop-1.png)<!-- -->
 
 Note that setting `fill = TRUE` will cause you to lose enclosed shapes
 in an svg
@@ -188,7 +189,7 @@ illustration('illo',width = 256,height = 256, rotate = c(y =tau/10, x = -tau/10)
     save_image()
 ```
 
-![](man/figuresfill_bishop-1.png)<!-- -->
+![](man/figures/fill_bishop-1.png)<!-- -->
 
 But some fiddling can still generate a decent looking 3D
 structure
@@ -216,7 +217,7 @@ for(i in seq_along(zAxis2)){
 rd %>% save_image()
 ```
 
-![](man/figuresthreed_bishop-1.png)<!-- -->
+![](man/figures/threed_bishop-1.png)<!-- -->
 
 ## Rendering STL files
 
@@ -249,7 +250,7 @@ illustration(width = 150,height = 150,dragRotate = TRUE,displayType = 'canvas',s
   animation_rotate(rotate =c(y = .01,x = .01)) %>% record_gif(duration = 5)
 ```
 
-![](man/figuresunnamed-chunk-4-1.gif)<!-- -->
+![](man/figures/stl-1.gif)<!-- -->
 
 ## Rendering maps
 
@@ -615,3 +616,86 @@ thinking of the best way to implement that myself.
     properties of objects under effect of )
   - Framework for custom draggers
   - A way to keep the `window` cleaner.
+
+## Rdog hex logo
+
+Rdog hex logo is also made in rdog.
+
+``` r
+# create polygon lines
+r = 120
+1:6 %>% lapply(function(i){
+    x = r * cos(2*pi*i/6)
+    y = r * sin(2*pi*i/6)
+    return(c(x = x ,y = y))
+}) -> polyEdges
+
+illustration(width = 250,height = 250) %>%
+  # i use individual shapes instead of a polygon because polygon edges do not 
+  # z fight correctly and appear below the dog head on a sideway view.
+  # shape_polygon(id = 'hex',sides = 6, stroke = 10,radius = 120,fill = FALSE,color = '#636') %>%
+  anchor(id = 'hexAnchor',rotate = c(z=tau/12)) %>% # rotate the hex to appear the right angle
+  shape_shape(id = 'hex1',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[1:2]) %>%
+  shape_shape(id = 'hex2',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[2:3]) %>%
+  shape_shape(id = 'hex3',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[3:4]) %>%
+  shape_shape(id = 'hex3',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[4:5]) %>%
+  shape_shape(id = 'hex4',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[5:6]) %>%
+  shape_shape(id = 'hex4',addTo = 'hexAnchor',stroke = 10,color = '#636',path = polyEdges[c(6,1)]) %>%
+  # create an anchor for the dog head and shit it up and move it to the front a little.
+  # create a second anchor to rotate a little. if I added the rotation to the previous 
+  # anchor, it would be rotating over the origin point.
+  anchor(id='dogMainAnchor', translate =  c(y = -10,z = 50)) %>%
+  anchor(id = 'dogAnchor',addTo = 'dogMainAnchor',translate = c(x = -10),rotate = c(y = 1*pi/16)) %>%
+  # dogs nose
+  shape_box(id = 'headFront',
+            addTo = 'dogAnchor',
+            width = 40, depth = 20,height =25,
+            stroke = 10,leftFace = '#EA0', rightFace = '#EA0', color = '#E62',
+            translate = c(z = -10, y = 5)) %>%
+  # dogs head
+  shape_box(id = 'headBack',
+            addTo = 'dogAnchor',
+            width = 50, depth = 40,height =60,
+            stroke = 10,leftFace = '#EA0', rightFace = '#EA0', color = '#E62',
+            translate = c(z = -50)) %>%
+  # create a group for the eye to control their z-fighting
+  group(id ='eyeGroup',addTo='dogAnchor') %>%
+  shape_shape(id = 'leftEye', addTo = 'eyeGroup',color= '#636',
+              translate = c(y = -20, z= -20, x = -20),stroke = 10) %>%
+  # copy the leftEye to create the right eye
+  copy(id = 'rightEye',what = 'leftEye', translate = c(y = -20, z = -20, x = 20)) %>% 
+  # a boopable snoot
+  shape_ellipse(id = 'nose', addTo = 'dogAnchor',color = '#636f',
+                quarters = 2, translate = c(z = 10) ,diameter = 20,
+                stroke = 10,rotate = c(z = tau/4)) %>%
+  # an anchor for ears
+  anchor(id = 'mainEarAnchor',addTo = 'dogAnchor',
+         translate = c(y = -20, z = -45)) %>%
+  # an anchor for left ear to control poisition and rotation
+  anchor(id = 'leftEarAnchor', addTo = 'mainEarAnchor', 
+         translate = c(x = -40),rotate = c(z = tau/16)) %>%
+  # create left ear
+  shape_ellipse(id = 'leftEar', addTo = 'leftEarAnchor', color = '#636', quarters = 2,
+                diameter = 40,
+                stroke = 10, rotate = c(y = -tau/4, x = -tau/16, z = -tau/16)) %>%
+  # copy the leftEarAnchor and the ear itself and flip it around to make the right ear
+  copyGraph(id = 'rightEarAnchor', what = 'leftEarAnchor', translate = c(x = 40),
+            rotate = c(z = -tau/16)) %>% 
+  # code for the tongue
+  anchor(id = 'tongueAnchor',addTo = 'dogAnchor',translate = c(z = -20,y = 25)) %>%
+  shape_shape(addTo = 'tongueAnchor', id = 'tongue',stroke = 10, color = '#636',
+              path = list(c(y = 0,x = 10,z = 0),
+                          c(y = 0, x = -10,z = 0),
+                          c(y = 25, x = -10, z = 0),
+                          arc = list(c(y = 35, x = 0, z = 0),
+                                     c(y = 25, x = 10, z = 0))),
+              rotate= c(x = tau/8)) %>%
+  # add the font and the text
+  zfont_font(id = 'font') %>%
+  zfont_text(zfont = 'font',text = 'rdog',color = '#E62',
+             stroke = 2,fontSize = 35,translate = c(y = 85),
+             textAlign = 'center') %>% 
+  save_image()
+```
+
+![](man/figures/rdog-1.png)<!-- -->
