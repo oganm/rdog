@@ -608,7 +608,6 @@ thinking of the best way to implement that myself.
 
 ## Todo
 
-  - `addChild`, `removeChild` and `remove` methods
   - Time based animations instead of frame count based ones.
   - animation that move instead of rotate
   - A basic framework for custom animations
