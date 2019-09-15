@@ -19,6 +19,7 @@ Imports:
     purrr,
     zeallot,
     shinyjs
+URL: https://github.com/oganm/rdog
 Remotes:
     rstudio/chromote
 RoxygenNote: 6.1.1
