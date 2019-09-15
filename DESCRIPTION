@@ -18,8 +18,13 @@ Imports:
     htmlwidgets,
     purrr,
     zeallot,
-    shinyjs
+    glue,
+    shiny,
+    stringr,
+    webshot2,
+    jsonlite
 URL: https://github.com/oganm/rdog
 Remotes:
-    rstudio/chromote
+    rstudio/chromote,
+    rstudio/webshot2
 RoxygenNote: 6.1.1

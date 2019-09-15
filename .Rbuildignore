@@ -1,3 +1,8 @@
 ^rdog\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^README.Rmd$
+^docs$
+^someShapes.R$
+^maptest.R$
+^empty-chessboard.svg$
