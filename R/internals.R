@@ -29,12 +29,12 @@ internal_shape = function(
     assertthat::assert_that(is.logical(backface) | assertthat::is.string(backface))
 
     glue::glue(
-        'color: "<color>",
+        'color: "<col_to_hex(color)>",
         stroke: <stroke>,
         fill: <tolower(fill)>,
         closed: <tolower(closed)>,
         visible: <tolower(visible)>,
-        backface: <if(is.logical(backface)){tolower(backface)}else{paste0("\'",backface,"\'")}>,
+        backface: <if(is.logical(backface)){tolower(backface)}else{paste0("\'",col_to_hex(backface),"\'")}>,
         front: <process_coord_vector(front)>',
         .close = '>',.open = '<')
 
@@ -159,7 +159,7 @@ process_all_input_types = function(inputName, input){
     out = switch(inputName,
            color = {
                assertthat::assert_that(assertthat::is.string(input))
-               glue::glue('"{input}"')
+               glue::glue('"{col_to_hex(input)}"')
            },
            stroke = {
                assertthat::assert_that(assertthat::is.number(input))
@@ -179,7 +179,7 @@ process_all_input_types = function(inputName, input){
            },
            backface = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(input)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(input)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            front = {
                process_coord_vector(input)
@@ -238,27 +238,27 @@ process_all_input_types = function(inputName, input){
            },
            frontFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            rearFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            leftFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            rightFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            topFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            bottomFace = {
                assertthat::assert_that(is.logical(input) | assertthat::is.string(input))
-               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",input,"\'")}
+               if(is.logical(frontFace)){tolower(input)}else{paste0("\'",col_to_hex(input),"\'")}
            },
            updateSort = {
                assertthat::assert_that(is.logical(input))
@@ -299,4 +299,16 @@ get_stl_bounds = function(stl){
         z = c(min(zs),max(zs))
     )
 
+}
+
+
+col_to_hex = function(colname){
+    assertthat::assert_that(assertthat::is.string(colname))
+    col = tryCatch({
+        col =grDevices::col2rgb(colname)
+        rgb(red = col['red', ]/255, green = col['green', ]/255, blue = col['blue',]/255)
+
+        }, error = function(e){colname})
+
+    return(col)
 }

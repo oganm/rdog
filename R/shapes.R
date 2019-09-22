@@ -78,7 +78,8 @@ shape_ellipse = function(rdog = NULL,
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -145,7 +146,8 @@ shape_rect = function(
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -221,7 +223,8 @@ shape_roundedRect = function(
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -295,7 +298,8 @@ shape_polygon = function(
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -361,15 +365,17 @@ shape_shape = function(
                 <selfString>,
                 <shapeString>,
                 <anchorString>
-            })',
+            })
+            <id>.id = "<id>"',
             .close = '>',.open = '<'
         )
     } else{
             fullString = glue::glue(
                 '<id> = new Zdog.Shape({
-                <shapeString>,
-                <anchorString>
-            })',
+                    <shapeString>,
+                    <anchorString>
+                })
+                <id>.id = "<id>"',
                 .close = '>',.open = '<'
             )
     }
@@ -447,7 +453,8 @@ shape_hemisphere = function(rdog = NULL,
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -519,7 +526,8 @@ shape_cone= function(rdog = NULL,
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -591,7 +599,8 @@ shape_cylinder= function(rdog = NULL,
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -668,12 +677,12 @@ shape_box= function(rdog = NULL,
         'width: <width>,
         height: <height>,
         depth: <depth>,
-        frontFace: <if(is.logical(frontFace)){tolower(frontFace)}else{paste0("\'",frontFace,"\'")}>,
-        rearFace: <if(is.logical(rearFace)){tolower(rearFace)}else{paste0("\'",rearFace,"\'")}>,
-        leftFace: <if(is.logical(leftFace)){tolower(leftFace)}else{paste0("\'",leftFace,"\'")}>,
-        rightFace: <if(is.logical(rightFace)){tolower(rightFace)}else{paste0("\'",rightFace,"\'")}>,
-        topFace: <if(is.logical(topFace)){tolower(topFace)}else{paste0("\'",topFace,"\'")}>,
-        bottomFace: <if(is.logical(bottomFace)){tolower(bottomFace)}else{paste0("\'",bottomFace,"\'")}>
+        frontFace: <if(is.logical(frontFace)){tolower(frontFace)}else{paste0("\'",col_to_hex(frontFace),"\'")}>,
+        rearFace: <if(is.logical(rearFace)){tolower(rearFace)}else{paste0("\'",col_to_hex(rearFace),"\'")}>,
+        leftFace: <if(is.logical(leftFace)){tolower(leftFace)}else{paste0("\'",col_to_hex(leftFace),"\'")}>,
+        rightFace: <if(is.logical(rightFace)){tolower(rightFace)}else{paste0("\'",col_to_hex(rightFace),"\'")}>,
+        topFace: <if(is.logical(topFace)){tolower(topFace)}else{paste0("\'",col_to_hex(topFace),"\'")}>,
+        bottomFace: <if(is.logical(bottomFace)){tolower(bottomFace)}else{paste0("\'",col_to_hex(bottomFace),"\'")}>
         ',
         .close = '>',.open = '<'
     )
@@ -684,7 +693,8 @@ shape_box= function(rdog = NULL,
             <selfString>,
             <shapeString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -717,7 +727,8 @@ anchor = function(
     fullString = glue::glue(
         '<id> = new Zdog.Anchor({
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
@@ -774,7 +785,8 @@ group= function(rdog = NULL,
         '<id> = new Zdog.Group({
             <selfString>,
             <anchorString>
-        })',
+        })
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 

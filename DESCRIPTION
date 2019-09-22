@@ -22,7 +22,8 @@ Imports:
     shiny,
     stringr,
     webshot2,
-    jsonlite
+    jsonlite,
+    grDevices
 URL: https://github.com/oganm/rdog
 Remotes:
     rstudio/chromote,

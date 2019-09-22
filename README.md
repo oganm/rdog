@@ -84,7 +84,7 @@ illustration('illo',width = 250,height = 250, dragRotate = TRUE) %>%
               stroke = 1,
               color = '#C25',
               leftFace = 'red',
-              rightFace =  'green',
+              rightFace =  'darkgreen',
               topFace =  'white',
               bottomFace =  'white',
               frontFace =  FALSE,
@@ -132,7 +132,7 @@ arguments.
 illustration('illo') %>% 
   shape_shape(id ='point1', translate = c(x = 100),stroke = 20, color = 'blue') %>% 
   shape_shape(addTo = 'point1', translate = c(y = - 100), stroke = 20, color = 'red') %>%
-  copy(id = 'copyOfPoint1', what = 'point1',color = 'green',translate = c(x = -100)) %>%
+  copy(id = 'copyOfPoint1', what = 'point1',color = 'darkgreen',translate = c(x = -100)) %>%
   save_image()
 ```
 
@@ -142,7 +142,7 @@ illustration('illo') %>%
 illustration('illo') %>% 
   shape_shape(id ='point1', translate = c(x = 100),stroke = 20, color = 'blue') %>% 
   shape_shape(addTo = 'point1', translate = c(y = - 100), stroke = 20, color = 'red') %>%
-  copyGraph(id = 'copyOfPoint1', what = 'point1',color = 'green',translate = c(x = -100)) %>%
+  copyGraph(id = 'copyOfPoint1', what = 'point1',color = 'darkgreen',translate = c(x = -100)) %>%
   save_image()
 ```
 
@@ -150,7 +150,10 @@ illustration('illo') %>%
 
 ## Rendering SVG paths
 
-Paths from svg files can also be displayed.
+Paths from svg files can also be displayed. [Chess bishop
+icon](https://game-icons.net/1x1/skoll/chess-bishop.html) used as an
+example here was made by by Skoll under [CC
+BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 
 ``` r
 # get an svg file
@@ -223,8 +226,13 @@ rd %>% save_image()
 
 ASCII stl files can be read and rendered using the `stl_to_shape`
 function. Note that adding objects with too many polygons will likely
-hurt performance
-drastically.
+hurt performance drastically.
+
+[GEB Logo](https://www.thingiverse.com/thing:3265) used in this example
+was made by [guru](https://www.thingiverse.com/guru), licensed under
+[Creative Commons - Attribution - Share
+Alike](https://creativecommons.org/licenses/by-sa/3.0/)
+license.
 
 ``` r
 stl = readLines(system.file('GEB.stl',package = 'rdog')) %>% paste(collapse = '\n')
@@ -246,8 +254,8 @@ stl_bounds
 
 ``` r
 illustration(width = 150,height = 150,dragRotate = TRUE,displayType = 'canvas',scale = 2,rotate = c(y = tau/2)) %>%
-  stl_to_shape(stl = stl,colorAxis = 'z', translate = c(z = -20),stroke = 1) %>% 
-  animation_rotate(rotate =c(y = .01,x = .01)) %>% record_gif(duration = 5)
+  stl_to_shape(stl = stl,colorAxis = 'z',colorMin = 'gray90',colorMax = 'black', translate = c(z = -20),stroke = 1) %>% 
+  animation_rotate(rotate =c(y = .01,x = .02)) %>% record_gif(duration = 10)
 ```
 
 ![](man/figures/stl-1.gif)<!-- -->
@@ -405,14 +413,18 @@ active animations is also returned in the input which allows one to
 avoid triggering the same animation multiple times.
 
 If the `displayType` is a `canvas` and you click on an object, you’ll
-also get a non-zero `objectId` for the object you clicked. Object ids
-start from 1 and incremented in the order you add the new elements. Note
-that objects created with single commands may occupy multiple ids for
-their different sides so you may have to experiment a little. For
-instance the ellipse below has two different IDs for its two sides. Text
-added by `zfont_text` has no object ids and clicking on text will return
-the id of the object below that text if there is any. If you want to
-detect text, you can create a transparent (not invisible) shape that
+also get the id of the object that you clicked along with a non-zero
+`objectNo`. `objectNo`s start from 1 and incremented in the order you
+add the new elements. If you add child elements however, numbers will be
+shifted since counting happens by iterating over the object tree.
+
+Note that objects created with single commands may occupy multiple ids
+for their different sides so you may have to experiment a little. For
+instance `shape_box` will have different IDs for each of their sides.
+
+Text added by `zfont_text` has no object ids and clicking on text will
+return the id of the object below that text if there is any. If you want
+to detect text, you can create a transparent (not invisible) shape that
 encompasses the text and use that id instead.
 
 ``` r
@@ -427,7 +439,7 @@ ui <- fluidPage(
 server <- function(input, output) {
     output$check = renderRdog({
         illustration('illo',height = 100, width = 100,dragRotate = FALSE) %>% 
-            shape_ellipse(diameter = 80, color = 'green', backface = 'red',stroke = 4) %>% 
+            shape_ellipse(id = 'button',diameter = 80, color = 'darkgreen', backface = 'red',stroke = 4) %>% 
             zfont_font(id= 'font') %>% 
             zfont_text(zfont = 'font', text = "YES",color = 'white',textAlign = 'center',fontSize = 30,translate = c(z = 20, y = 10),stroke = 2) %>% 
             zfont_text(zfont = 'font', text = "NO",color = 'white',textAlign = 'center',fontSize = 30,rotate = c(y = pi),translate = c(z = -20, y = 10),stroke = 2)
@@ -440,7 +452,8 @@ server <- function(input, output) {
             if(is.null(input$check$animations$ease) || input$check$animations$ease == 0){
                 animation_ease_in(id = 'ease',rdog = 'illo',frames = 60,radiansPerCycle = tau/2,addTo='illo',framesPerCycle = 60,power = 3)
             }
-            paste("x: ",input$check$x,'y:', input$check$y, "object:", input$check$objectId) 
+            browser()
+            paste0("x:",input$check$x,' y:', input$check$y, " object:", input$check$objectId, " #:", input$check$objectNo) 
         }
     })
 }
@@ -520,10 +533,6 @@ Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames,
         window[add_to].rotate.y += y;
         window[add_to].rotate.z += z;
 
-        // record any changes to the original object
-        Rdog_variables.animRotating_objects[add_to] = window[add_to];
-        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
-
 
         window[illo_id].updateRenderGraph();
         requestAnimationFrame( Rdog_variables.animFuns[id] );
@@ -562,16 +571,6 @@ window[add_to].rotate.y += y;
 window[add_to].rotate.z += z;
 ```
 
-After each frame the whole illustration and the target object is saved
-to `Rdog_variables.animRotating_objects`. These variables are used by
-`Rdog_variables.utils.set_up_vars` to restore animation state on a
-reset.
-
-``` js
-Rdog_variables.animRotating_objects[add_to] = window[add_to];
-Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
-```
-
 The next two lines create the infinite loop for the animation. They
 should be at the end of every animation function
 
@@ -600,19 +599,28 @@ thinking of the best way to implement that myself.
 
 ## Notes
 
-  - Care should be taken when naming objects. Currently every object
-    gets a variable under `window`. Good for easy manipulation, not
-    great for collusions and stuff. If you name any element `Zdog` for
-    instance whole thing goes down so you should make sure that you are
-    not colliding with any existing javascript object.
+### Scoping
+
+Care should be taken when naming objects. Currently every object gets a
+variable under `window`. Good for easy manipulation, not great for
+collusions and stuff. If you name any element `Zdog` for instance whole
+thing goes down so you should make sure that you are not colliding with
+any existing javascript object.
+
+### Using colors
+
+When naming colors, you can use named R colors (`red`) or 6 character
+hexes (`#FF0000`, or `#FF0000FF` with transparency), 3 digit hexes
+(`#F00` or `#F00F` with transparency) should also work for most cases
+but there are gaps in my javascript that doesn’t account for them.
+Expect things to break if using more complicated functions like
+`stl_to_shape`
 
 ## Todo
 
   - Time based animations instead of frame count based ones.
-  - animation that move instead of rotate
   - A basic framework for custom animations
-  - Return more information about the state of the canvas (eg.
-    properties of objects under effect of )
+  - Return more information about the state of the canvas in shiny
   - Framework for custom draggers
   - A way to keep the `window` cleaner.
 
@@ -629,7 +637,7 @@ r = 120
     return(c(x = x ,y = y))
 }) -> polyEdges
 
-illustration(width = 250,height = 250) %>%
+illustration(width = 250,height = 250,dragRotate = TRUE) %>%
   # i use individual shapes instead of a polygon because polygon edges do not 
   # z fight correctly and appear below the dog head on a sideway view.
   # shape_polygon(id = 'hex',sides = 6, stroke = 10,radius = 120,fill = FALSE,color = '#636') %>%

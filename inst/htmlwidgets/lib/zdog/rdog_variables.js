@@ -13,17 +13,6 @@ Rdog_variables.svg = {};
 // multiple times
 Rdog_variables.utils.set_up_vars = function(id, add_to, illo_id){
 
-    // if the associated object has no animation create a copy of the object to have
-    // an internal copy of the object to recover when there's a change
-    if( Rdog_variables.animRotating_objects[add_to] === undefined){
-        Rdog_variables.animRotating_objects[add_to] = window[add_to];
-    }
-
-    // in all cases, take a copy of the entire illustration since it is subject
-    // to rotation changes by dragging
-    if( Rdog_variables.animRotating_objects[illo_id] === undefined){
-        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
-    }
 
     // this is to prevent animation loops with the same id being rerun
     // if this number is greater than 1 that means the current execution
@@ -54,6 +43,19 @@ Rdog_variables.utils.set_up_vars = function(id, add_to, illo_id){
         );
 
     }
+
+    // if the associated object has no animation create a copy of the object to have
+    // an internal copy of the object to recover when there's a change
+    //if( Rdog_variables.animRotating_objects[add_to] === undefined){
+        Rdog_variables.animRotating_objects[add_to] = window[add_to];
+    //}
+
+    // in all cases, take a copy of the entire illustration since it is subject
+    // to rotation changes by dragging
+    //if( Rdog_variables.animRotating_objects[illo_id] === undefined){
+        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+    //}
+
 
 };
 
@@ -89,8 +91,8 @@ Rdog_variables.built_in.animation_none = function(id, add_to, illo_id){
         }
 
         // record any changes to the original object and illustration
-        Rdog_variables.animRotating_objects[add_to] = window[add_to];
-        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+        //Rdog_variables.animRotating_objects[add_to] = window[add_to];
+        //Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
 
 
         window[illo_id].updateRenderGraph();
@@ -115,8 +117,8 @@ Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames,
         window[add_to].rotate.z += z;
 
         // record any changes to the original object
-        Rdog_variables.animRotating_objects[add_to] = window[add_to];
-        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+        //Rdog_variables.animRotating_objects[add_to] = window[add_to];
+        //Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
 
 
         window[illo_id].updateRenderGraph();
@@ -126,7 +128,31 @@ Rdog_variables.built_in.animation_rotate = function(id, add_to, illo_id, frames,
 
 };
 
+Rdog_variables.built_in.animation_move = function(id, add_to, illo_id, frames, x, y, z){
+    Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
 
+    Rdog_variables.animFuns[id] = function(){
+
+        if(Rdog_variables.utils.terminationCheck(id, frames)){
+            return;
+        }
+        frames -= 1;
+
+        window[add_to].translate.x += x;
+        window[add_to].translate.y += y;
+        window[add_to].translate.z += z;
+
+        // record any changes to the original object
+        //Rdog_variables.animRotating_objects[add_to] = window[add_to];
+        //Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+
+
+        window[illo_id].updateRenderGraph();
+        requestAnimationFrame( Rdog_variables.animFuns[id] );
+    };
+    Rdog_variables.animFuns[id]();
+
+};
 
 Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames, framesPerCycle, pause, radiansPerCycle, rotateAxis, power){
     Rdog_variables.utils.set_up_vars(id, add_to, illo_id);
@@ -183,8 +209,8 @@ Rdog_variables.built_in.animation_ease_in = function(id, add_to, illo_id, frames
 
 
         // record any changes to the original object and illustration
-        Rdog_variables.animRotating_objects[add_to] = window[add_to];
-        Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
+        //Rdog_variables.animRotating_objects[add_to] = window[add_to];
+        //Rdog_variables.animRotating_objects[illo_id] = window[illo_id];
 
 
         window[illo_id].updateRenderGraph();
@@ -410,7 +436,7 @@ Rdog_variables.utils.clicked = function(evt, id, widget){
         canv_ghost.id = widget.canvasID+'_ghost';
         canv_ghost.height= widget.height;
         canv_ghost.width = widget.width;
-        canv_ghost.style.background = 'black';
+        canv_ghost.style.background = 'white';
         canv_ghost.style.display="none";
 
         parent.appendChild(canv_ghost);
@@ -440,14 +466,19 @@ Rdog_variables.utils.clicked = function(evt, id, widget){
 
 
         var colorStep = 0
+        // just for debugging purposes.
+        // higher increments makes colors changes more visible
+        // also comment out canv_ghost.style.display="none" above
+        var colorIncrement = 1
 
         var setColor = function(child){
           if(child.color !== undefined){
-              child.color = Rdog_variables.utils.incrementColor("#000001",colorStep);
-              colorStep += 1;
+              colorStep += colorIncrement;
+              child.color = Rdog_variables.utils.incrementColor("#000000",colorStep);
           }
-          if(child.backface!==undefined){
-              child.backface = Rdog_variables.utils.incrementColor("#000001",colorStep);
+          if(child.backface!==undefined && child.backface){
+              // colorStep += colorIncrement;
+              child.backface = Rdog_variables.utils.incrementColor("#000000",colorStep);
           }
           if(child.children.length > 0){
               child.children.forEach(setColor);
@@ -475,14 +506,42 @@ Rdog_variables.utils.clicked = function(evt, id, widget){
         var colorToInt = parseInt(rgb.substr(1), 16)
         colorToInt = parseInt(rgb.substr(1), 16),
         console.log(rgb)
+
+        var tracer = 0
+        var currentId = ''
+        var findObject = function(child){
+            if(child.id !== undefined){
+                currentId = child.id
+            }
+
+
+            if(child.color !== undefined){
+                tracer += 1
+                if(tracer == colorToInt/colorIncrement){
+                    return true
+                }
+            }
+
+
+            if(child.children.length > 0){
+              child.children.some(findObject);
+          }
+        }
+
+        if(colorToInt>0){
+            window[widget.illId].children.some(findObject);
+        }
+
     } else{
         var colorToInt = 0;
     }
 
+
     var message = {
         x: x,
         y: y,
-        objectId: colorToInt,
+        objectId: currentId,
+        objectNo: colorToInt/colorIncrement,
         nonce: Math.random(),
         animations: Rdog_variables.animations
     };
@@ -493,7 +552,8 @@ Rdog_variables.utils.clicked = function(evt, id, widget){
         Shiny.onInputChange(id,message);
     }
 
-    console.log(colorToInt)
+    console.log(colorToInt/colorIncrement)
+    console.log(currentId)
     console.log('x: '+x+' y:'+y);
 
 };

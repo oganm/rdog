@@ -28,6 +28,11 @@ stl_to_shape = function(
 
     assertthat::assert_that(assertthat::is.string(id))
     assertthat::assert_that(assertthat::is.string(stl))
+    assertthat::assert_that(assertthat::is.string(colorMax))
+    assertthat::assert_that(assertthat::is.string(colorMin))
+
+    colorMin = col_to_hex(colorMin)
+    colorMax = col_to_hex(colorMax)
 
 
     anchorString = internal_anchor(addTo,
@@ -39,7 +44,8 @@ stl_to_shape = function(
     anchor = glue::glue(
         '<id> = new Zdog.Anchor({
             <anchorString>
-        });',
+        });
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 

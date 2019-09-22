@@ -139,3 +139,55 @@ animation_ease_in = function(rdog,
         return(animationScript)
     }
 }
+
+
+
+#' Basic movement
+#'
+#' Moves the object at a given speed.
+#'
+#' @param rdog rdog object to add the animation to. Can be a character if called from a code block in shiny
+#' @param id Id of the animation. You should set this if you want to be able
+#' to check if this animation is running when getting inputs in a shiny app
+#' @param addTo Which element should this animation be added to. If NULL, animation
+#' will be set to the entire illustration.
+#' @param frames How many frames should the animation run for. Usefult for animations triggered in shiny applications
+#' @param move Rate of movement per frame in pixes.
+#' @export
+animation_move = function(rdog = NULL,
+                          id = NULL,
+                          addTo = NULL,
+                          frames = Inf,
+                          move = c(x = 0, y = 0, z = 0)){
+
+    # standard processing of rdog inputs.
+    c(addTo,id,illoId) %<-% process_id_inputs(rdog, addTo, id)
+
+    # in javascript, Infinity is Inf
+    if(is.infinite(frames)){
+        frames = 'Infinity'
+    }
+
+    # preparing the input arguments
+    coords = c('x','y','z')
+    move[coords[!coords %in% names(move)]] = 0
+
+    # create the animation script. this will run the javascript code for the animation function
+    animationScript = glue::glue(
+        '
+        Rdog_variables.built_in.animation_move("<id>","<addTo>","<illoId>",<frames>,<move["x"]>,<move["y"]>,<move["z"]>);
+        ',.open = '<',.close = '>')
+
+
+    # standard processing of rdog outputs
+    if('htmlwidget' %in% class(rdog)){
+        rdog$x$jsCode %<>% paste0('\n',animationScript)
+        return(rdog)
+    } else if(is.character(rdog)){
+        if(shiny::isRunning()){
+            shinyjs::runjs(animationScript)
+        }
+        animationScript
+    }
+
+}

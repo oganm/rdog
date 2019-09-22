@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Remove element from parent — remove • rdog</title>
+<title>Basic movement — animation_move • rdog</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Remove element from parent — remove" />
-<meta property="og:description" content="Remove element from parent" />
+<meta property="og:title" content="Basic movement — animation_move" />
+<meta property="og:description" content="Moves the object at a given speed." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -105,23 +105,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Remove element from parent</h1>
-    <small class="dont-index">Source: <a href='https://github.com/oganm/rdog/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
-    <div class="hidden name"><code>remove.Rd</code></div>
+    <h1>Basic movement</h1>
+    <small class="dont-index">Source: <a href='https://github.com/oganm/rdog/blob/master/R/animation.R'><code>R/animation.R</code></a></small>
+    <div class="hidden name"><code>animation_move.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Remove element from parent</p>
+    <p>Moves the object at a given speed.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>remove</span>(<span class='kw'>rdog</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>what</span>)</pre>
+    <pre class="usage"><span class='fu'>animation_move</span>(<span class='kw'>rdog</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>addTo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>frames</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
+  <span class='kw'>move</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>))</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>rdog</th>
+      <td><p>rdog object to add the animation to. Can be a character if called from a code block in shiny</p></td>
+    </tr>
+    <tr>
+      <th>id</th>
+      <td><p>Id of the animation. You should set this if you want to be able
+to check if this animation is running when getting inputs in a shiny app</p></td>
+    </tr>
+    <tr>
+      <th>addTo</th>
+      <td><p>Which element should this animation be added to. If NULL, animation
+will be set to the entire illustration.</p></td>
+    </tr>
+    <tr>
+      <th>frames</th>
+      <td><p>How many frames should the animation run for. Usefult for animations triggered in shiny applications</p></td>
+    </tr>
+    <tr>
+      <th>move</th>
+      <td><p>Rate of movement per frame in pixes.</p></td>
+    </tr>
+    </table>
 
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
     </ul>
 
   </div>

@@ -58,7 +58,8 @@ svg_path_to_shape = function(rdog = NULL,
         '<id> = new Zdog.Group({
             <groupSelfString>,
             <anchorString>
-        });',
+        });
+        <id>.id = "<id>"',
         .close = '>',.open = '<'
     )
 
