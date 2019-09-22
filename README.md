@@ -6,16 +6,22 @@ Currently a work in progres.
 
 # Table of Contents
 
-  - [Installation](#installation)
-  - [Why?](#why)
-  - [Basic usage](#basic-usage)
-  - [Rendering SVG paths](#rendering-svg-paths)
-  - [Rendering STL files](#rendering-stl-files)
-  - [Rendering maps](#rendering-maps)
-  - [Use in shiny](#use-in-shiny)
-  - [Use as shiny inputs](#use-as-shiny-inputs)
-  - [Todo](#todo)
-  - [Rdog hex logo](#rdog-hex-logo)
+  - [Rdog](#rdog)
+  - [Table of Contents](#table-of-contents)
+      - [Installation](#installation)
+      - [Why?](#why)
+      - [Basic usage](#basic-usage)
+      - [Rendering SVG paths](#rendering-svg-paths)
+      - [Rendering STL files](#rendering-stl-files)
+      - [Rendering maps](#rendering-maps)
+      - [Use in shiny](#use-in-shiny)
+      - [Use as shiny inputs](#use-as-shiny-inputs)
+      - [Anatomy of an animation](#anatomy-of-an-animation)
+      - [Notes](#notes)
+          - [Scoping](#scoping)
+          - [Using colors](#using-colors)
+      - [Todo](#todo)
+      - [Rdog hex logo](#rdog-hex-logo)
 
 ## Installation
 
