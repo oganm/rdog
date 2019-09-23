@@ -13,12 +13,11 @@ devtools::load_all()
 # Rdog <img src="man/figures/logo.gif" align="right" height="150"/>
 
 This is a port of the [zdog](https://zzz.dog/) pseudo 3D engine for R.
-Currently a work in progres.
 
 Table of Contents
 =================
 
-   * [Rdog](#rdog)
+   * [Rdog](#rdog-)
    * [Table of Contents](#table-of-contents)
       * [Installation](#installation)
       * [Why?](#why)
