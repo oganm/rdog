@@ -5,22 +5,32 @@
 \title{STL to shape}
 \usage{
 stl_to_shape(rdog = NULL, id = NULL, stl, colorAxis = "z",
-  colorMin = "#FFFFFF", colorMax = "#000000", stroke = 1,
-  addTo = NULL, translate = c(x = 0, y = 0, z = 0), rotate = c(x = 0,
-  y = 0, z = 0), scale = c(x = 1, y = 1, z = 1))
+  colorMin = "#FFFFFF", colorMax = "#000000", visible = TRUE,
+  colorMode = c("mean", "extreme", "ordered"), objectOffset = c(x = 0,
+  y = 0, z = 0), stroke = 1, addTo = NULL, translate = c(x = 0, y =
+  0, z = 0), rotate = c(x = 0, y = 0, z = 0), scale = c(x = 1, y = 1, z
+  = 1))
 }
 \arguments{
 \item{rdog}{rdog object to add the shape to. Can be a character if called from a code block in shiny}
 
 \item{id}{id of the anchor. If NULL, a random id will be assigned}
 
-\item{stl}{contents of an ascii stl file as a character}
+\item{stl}{contents of an ascii stl file as a character or path to an stl file}
 
 \item{colorAxis}{axis to apply the color gradient}
 
 \item{colorMin}{Starting color of the color gradient}
 
 \item{colorMax}{Ending color of the color gradient}
+
+\item{visible}{Is the object visible}
+
+\item{colorMode}{How to apply the color gradient. \code{mean} will color each triangle
+based on the mean of their \code{colorAxis}, \code{extreme} will color each triangle
+based on the maximum and minimum \code{colorAxis} for the triangle. \code{ordered} will
+ignore \code{colorAxis} and just colors vertexes in the order they appear. Depending on
+how the file was constructed, this may or may not create a sensible image.}
 
 \item{stroke}{Stroke to add to the polygons.}
 

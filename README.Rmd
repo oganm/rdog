@@ -23,7 +23,7 @@ Table of Contents
       * [Why?](#why)
       * [Basic usage](#basic-usage)
       * [Rendering SVG paths](#rendering-svg-paths)
-      * [Rendering STL files](#rendering-stl-files)
+      * [Rendering 3D STL files](#rendering-stl-files)
       * [Rendering maps](#rendering-maps)
       * [Use in shiny](#use-in-shiny)
       * [Use as shiny inputs](#use-as-shiny-inputs)
@@ -211,26 +211,93 @@ rd %>% save_image()
 ```
 
 
-## Rendering STL files
+## Rendering 3D STL files
 
-ASCII stl files can be read and rendered using the `stl_to_shape` function. Note that
+Stl files can be read and rendered using the `stl_to_shape` function. Note that
 adding objects with too many polygons will likely hurt performance drastically.
 
-[GEB Logo](https://www.thingiverse.com/thing:3265) used in this example was made by [guru](https://www.thingiverse.com/guru), licensed under [Creative Commons - Attribution - Share Alike](https://creativecommons.org/licenses/by-sa/3.0/) license.
+While not necessary, you can use `binary_to_ascii_stl` function to convert any binary
+stl to ascii stl files. This conversion happens internally if you don't so it's every
+so slightly more efficient to use it.
+
+[GEB Logo](https://www.thingiverse.com/thing:3265) used in this example was made by [guru](https://www.thingiverse.com/guru), licensed under [Creative Commons - Attribution - Share Alike](https://creativecommons.org/licenses/by-sa/3.0/) license. The origin of the logo
+is "[Gödel, Escher, Bach](https://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach)".
 
 ```{r stl}
-stl = readLines(system.file('GEB.stl',package = 'rdog')) %>% paste(collapse = '\n')
+stl = system.file('GEB.stl',package = 'rdog')
 
 stl_bounds = get_stl_bounds(stl)
 
 # we need to subtract 20 from the z axis to center this file
 stl_bounds
 
-illustration(width = 150,height = 150,dragRotate = TRUE,displayType = 'canvas',scale = 2,rotate = c(y = tau/2)) %>%
-  stl_to_shape(stl = stl,colorAxis = 'z',colorMin = 'gray90',colorMax = 'black', translate = c(z = -20),stroke = 1) %>% 
+# center_stl function can be used to center the objects automatically
+center_stl(stl_bounds)
+
+# use objectOffset to center the variable
+illustration(width = 150,height = 150,displayType = 'canvas',scale = 2,rotate = c(y = tau/2)) %>%
+  stl_to_shape(stl = stl,colorAxis = 'z',colorMin = 'gray90',colorMax = 'black',
+               objectOffset = center_stl(stl_bounds),
+               stroke = 1) %>% 
   animation_rotate(rotate =c(y = .01,x = .02)) %>% record_gif(duration = 10)
 
+
 ```
+
+Let's take a look at the platonic solids.
+
+```{r gc, include=FALSE}
+gc()
+```
+
+```r
+platonic = list(
+  tetrahedron =  readLines(system.file('tetrahedron.stl',package = 'rdog')) %>% paste(collapse = '\n'),
+  cube = readLines(system.file('cube.stl',package = 'rdog')) %>% paste(collapse = '\n'),
+  octatohedron = readLines(system.file('octahedron.stl',package = 'rdog')) %>% paste(collapse = '\n'),
+  dodecahedron = readLines(system.file('dodecahedron.stl',package = 'rdog')) %>% paste(collapse = '\n'),
+  icosahedron = readLines(system.file('icosahedron.stl',package = 'rdog')) %>% paste(collapse = '\n')
+)
+
+
+illo = illustration(width = 150*5,height = 150,displayType = 'canvas',centered = TRUE)
+
+anchorCenters = seq(-300,300,by = 150)
+
+
+for(i in seq_along(platonic)){
+  illo %<>% 
+    anchor(id = paste0(names(platonic)[i],'_anchor'), translate = c(x = anchorCenters[i])
+           ) %>% 
+     stl_to_shape(id = names(platonic)[i],
+                  addTo = paste0(names(platonic)[i],'_anchor'),
+                  stl = platonic[[i]],
+                  colorMode = 'ordered',colorMin = 'gray90',colorMax = 'black',
+               objectOffset = center_stl(get_stl_bounds(platonic[[i]])),
+               stroke = 1, scale = 5) %>% 
+    animation_rotate(addTo = names(platonic)[i], rotate = c(y = .01, x = 0.02))
+  
+  
+}
+
+illo %>% record_gif(duration = 10)
+
+
+```
+![](man/figures/platonic.gif)
+
+
+Use `objectOffset` instead of `translate` when centering an STL file otherwise rotation
+center won't be correctly aligned.
+
+The coloring of the triangles that make up an object is controlled by `colorMode`,
+`colorAxis`, `colorMin` and `colorMax`. `colorMin` and `colorMax` is used to create
+a color gradient that is used to color the triangles. `colorMode` controls how the 
+colors are distributed. The default method ("mean", seen in the GEB example) gets the mean `colorAxis` coordinate
+of each triangle and assigns a color based on that. "extreme" method assigns color based on the
+minimum and maximum `colorAxis` coordinate. "ordered" method (seen in the platonic solids example) assigns color in the 
+order the triangles appear in the file so that each triangle gets a unique color.
+
 
 ## Rendering maps
 
@@ -303,7 +370,7 @@ for(i in seq_along(contours)){
 
 rdog %>%
     animation_rotate(rotate = c(y = .01)) %>% 
-    record_gif(duration = 12, file = 'elmat.gif')
+    record_gif(duration = 12)
 ```
 ![](man/figures/elmat.gif)
 
@@ -411,7 +478,6 @@ server <- function(input, output) {
             if(is.null(input$check$animations$ease) || input$check$animations$ease == 0){
                 animation_ease_in(id = 'ease',rdog = 'illo',frames = 60,radiansPerCycle = tau/2,addTo='illo',framesPerCycle = 60,power = 3)
             }
-            browser()
             paste0("x:",input$check$x,' y:', input$check$y, " object:", input$check$objectId, " #:", input$check$objectNo) 
         }
     })

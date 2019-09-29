@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rdog</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0.9000</span>
       </span>
     </div>
 
@@ -115,9 +115,11 @@
     </div>
 
     <pre class="usage"><span class='fu'>stl_to_shape</span>(<span class='kw'>rdog</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>stl</span>, <span class='kw'>colorAxis</span> <span class='kw'>=</span> <span class='st'>"z"</span>,
-  <span class='kw'>colorMin</span> <span class='kw'>=</span> <span class='st'>"#FFFFFF"</span>, <span class='kw'>colorMax</span> <span class='kw'>=</span> <span class='st'>"#000000"</span>, <span class='kw'>stroke</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>addTo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>translate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>), <span class='kw'>rotate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>), <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>1</span>))</pre>
+  <span class='kw'>colorMin</span> <span class='kw'>=</span> <span class='st'>"#FFFFFF"</span>, <span class='kw'>colorMax</span> <span class='kw'>=</span> <span class='st'>"#000000"</span>, <span class='kw'>visible</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>colorMode</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mean"</span>, <span class='st'>"extreme"</span>, <span class='st'>"ordered"</span>), <span class='kw'>objectOffset</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>), <span class='kw'>stroke</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>addTo</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>translate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>y</span> <span class='kw'>=</span>
+  <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>), <span class='kw'>rotate</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>z</span> <span class='kw'>=</span> <span class='fl'>0</span>), <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>z</span>
+  <span class='kw'>=</span> <span class='fl'>1</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,7 +134,7 @@
     </tr>
     <tr>
       <th>stl</th>
-      <td><p>contents of an ascii stl file as a character</p></td>
+      <td><p>contents of an ascii stl file as a character or path to an stl file</p></td>
     </tr>
     <tr>
       <th>colorAxis</th>
@@ -145,6 +147,18 @@
     <tr>
       <th>colorMax</th>
       <td><p>Ending color of the color gradient</p></td>
+    </tr>
+    <tr>
+      <th>visible</th>
+      <td><p>Is the object visible</p></td>
+    </tr>
+    <tr>
+      <th>colorMode</th>
+      <td><p>How to apply the color gradient. <code>mean</code> will color each triangle
+based on the mean of their <code>colorAxis</code>, <code>extreme</code> will color each triangle
+based on the maximum and minimum <code>colorAxis</code> for the triangle. <code>ordered</code> will
+ignore <code>colorAxis</code> and just colors vertexes in the order they appear. Depending on
+how the file was constructed, this may or may not create a sensible image.</p></td>
     </tr>
     <tr>
       <th>stroke</th>

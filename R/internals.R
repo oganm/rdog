@@ -275,13 +275,24 @@ process_all_input_types = function(inputName, input){
     return(out)
 }
 
+#' Get boundaries of an stl file
+#' @param stl A character with contents of an stl file
 #' @export
 get_stl_bounds = function(stl){
+
+    if(file.exists(stl)){
+        if(is_binary(stl)){
+            stl = binary_to_ascii_stl(stl)
+        } else{
+            stl = readLines(stl) %>% paste0(collapse = '\n')
+        }
+    }
+
     stlLines = stl %>% strsplit('\n') %>% {.[[1]]}
 
     lapply(stlLines, function(x){
         if(grepl('vertex',x)){
-            coords = stringr::str_extract_all(x, '[-+]?([0-9]*\\.[0-9]+|[0-9]+)') %>% {.[[1]]} %>% as.numeric()
+            coords = x %>% stringr::str_extract('(?<=vertex ).*') %>% strsplit(' ') %>% {.[[1]]} %>% as.numeric()
             names(coords) = c('x','y','z')
             return(coords)
         } else{
@@ -301,12 +312,73 @@ get_stl_bounds = function(stl){
 
 }
 
+#' Create the transform parameter to center an stl
+#'
+#' @param stl_bounds output of \code{\link{get_stl_bounds}}
+#' @export
+center_stl = function(stl_bounds, exclude = NULL){
+    stl_bounds %>% sapply(function(x){
+        -(min(x) + (max(x) - min(x))/2)
+    })->out
+
+    if(!is.null(exclude)){
+        out[exclude] = 0
+    }
+    return(out)
+}
+
+#' Convert binary STL to ASCII stl
+#'
+#' @param file Input filepath
+#' @param output output filepath
+#' @export
+binary_to_ascii_stl = function(file,output = NULL){
+    bin = readBin(file, what= 'raw',
+                  n = file.info(file)$size)
+
+    if(is.null(output)){
+        output = tempfile()
+    }
+    cat('solid \n',file = output)
+    faces = readBin(bin[81:84],what = 'int',size = 4)
+
+    for (i in seq_len(faces)){
+        # facet normal
+        x = readBin(bin[i*50 + (85:88)],'double',size = 4)
+        y = readBin(bin[i*50 + (89:92)],'double',size = 4)
+        z = readBin(bin[i*50 + (93:96)],'double',size = 4)
+
+        cat(glue::glue('facet normal {x} {y} {z}\nouter loop\n\n'),file = output, append = TRUE)
+
+        # vertexes
+        for (j in 1:3){
+            x = readBin(bin[i*50 + 12*j + (85:88)],'double',size = 4)
+            y = readBin(bin[i*50 + 12*j + (89:92)],'double',size = 4)
+            z = readBin(bin[i*50 + 12*j + (93:96)],'double',size = 4)
+
+            cat(glue::glue('vertex {x} {y} {z}\n\n'),file = output, append = TRUE)
+        }
+
+        cat(glue::glue('endloop\nendfacet\n\n'),file = output, append = TRUE)
+    }
+
+    readLines(output) %>% paste(collapse = '\n')
+}
+
+
+# https://stackoverflow.com/questions/16350164/native-method-in-r-to-test-if-file-is-ascii
+is_binary = function(filepath,max=1000){
+    f=file(filepath,"rb",raw=TRUE)
+    b=readBin(f,"int",max,size=1,signed=FALSE)
+    close(f)
+    return(max(b)>128)
+}
 
 col_to_hex = function(colname){
     assertthat::assert_that(assertthat::is.string(colname))
     col = tryCatch({
-        col =grDevices::col2rgb(colname)
-        rgb(red = col['red', ]/255, green = col['green', ]/255, blue = col['blue',]/255)
+        col =grDevices::col2rgb(colname, alpha = TRUE)
+        rgb(red = col['red', ]/255, green = col['green', ]/255, blue = col['blue',]/255, alpha = col['alpha',]/255)
 
         }, error = function(e){colname})
 
