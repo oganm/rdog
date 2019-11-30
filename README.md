@@ -128,8 +128,8 @@ illustration('illo') %>%
 
 ![](man/figures/anchor-1.png)<!-- -->
 
-`copy` and `copyGraph` functions can be used to duplicate objects.
-`copyGraph` will also copy any children object that an object has. You
+`copy` and `copy_graph` functions can be used to duplicate objects.
+`copy_graph` will also copy any children object that an object has. You
 can change properties of the object you copy by passing additional
 arguments.
 
@@ -147,7 +147,7 @@ illustration('illo') %>%
 illustration('illo') %>% 
   shape_shape(id ='point1', translate = c(x = 100),stroke = 20, color = 'blue') %>% 
   shape_shape(addTo = 'point1', translate = c(y = - 100), stroke = 20, color = 'red') %>%
-  copyGraph(id = 'copyOfPoint1', what = 'point1',color = 'darkgreen',translate = c(x = -100)) %>%
+  copy_graph(id = 'copyOfPoint1', what = 'point1',color = 'darkgreen',translate = c(x = -100)) %>%
   save_image()
 ```
 
@@ -363,7 +363,7 @@ elmat = matrix(raster::extract(localtif, raster::extent(localtif), buffer = 1000
                nrow = ncol(localtif), ncol = nrow(localtif))
 
 # scale values to be between -50 and 50 to match the z coordinates they'll get
-elmat %<>% scaleToInt(-50,50)
+elmat %<>% scale_to_int(-50,50)
 contours = contourLines(z = elmat, nlevels = 30)
 
 # get contour levels
@@ -460,7 +460,7 @@ server <- function(input, output) {
     
     observe({
         print(input$slider)
-        updateProperty(rdog = 'illo',elementId = 'ellipse', diameter = input$slider)
+        update_property(rdog = 'illo',elementId = 'ellipse', diameter = input$slider)
     })
     
 }
@@ -539,7 +539,7 @@ shinyApp(ui = ui, server = server)
 
 Bulk of animating is handled by javascript. If you want to write your
 custom animations, you’ll also want to use javascript even though it is
-technically possible to handle it in R by using `updateProperty`.
+technically possible to handle it in R by using `update_property`.
 Handling animations through javascript will be lighter on the R session
 and offload that job to the browser.
 
@@ -759,7 +759,7 @@ illustration(width = 250,height = 250,dragRotate = TRUE) %>%
                 diameter = 40,
                 stroke = 10, rotate = c(y = -tau/4, x = -tau/16, z = -tau/16)) %>%
   # copy the leftEarAnchor and the ear itself and flip it around to make the right ear
-  copyGraph(id = 'rightEarAnchor', what = 'leftEarAnchor', translate = c(x = 40),
+  copy_graph(id = 'rightEarAnchor', what = 'leftEarAnchor', translate = c(x = 40),
             rotate = c(z = -tau/16)) %>% 
   # code for the tongue
   anchor(id = 'tongueAnchor',addTo = 'dogAnchor',translate = c(z = -20,y = 25)) %>%

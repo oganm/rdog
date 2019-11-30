@@ -10,7 +10,6 @@
 #' @usage lhs \%>\% rhs
 NULL
 
-
 #' @importFrom magrittr %<>%
 #' @usage lhs \%<>\$ rhs
 #' @keywords internal
@@ -30,7 +29,7 @@ NULL
 #' @param min minimum value of the new interval
 #' @param max maximum value of the new interval
 #' @export
-scaleToInt = function(x, min,max){
+scale_to_int = function(x, min,max){
     scaleFun = scaleIntervals(max(x,na.rm = TRUE),min(x, na.rm=TRUE),max,min)
     scaleFun(x)
 }

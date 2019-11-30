@@ -7,7 +7,7 @@ Rdog_variables.animation_variables = {};
 Rdog_variables.utils = {};
 Rdog_variables.svg = {};
 Rdog_variables.built_in = {};
-
+Rdog_variables.objects = {};
 
 
 // based on https://codepen.io/dheera/pen/zQJBrx
@@ -194,17 +194,10 @@ Rdog_variables.utils.getGradient = function(color1, color2, weight) {
 
 Rdog_variables.utils.clicked = function(evt, id, widget){
 
-    if(widget.displayType =='svg'){
-        var e = evt.target;
-        var dim = e.getBoundingClientRect();
-        var x = evt.clientX - dim.left;
-        var y = evt.clientY - dim.top;
-    } else if(widget.displayType =='canvas'){
-        var e = evt.target;
-        var dim = e.getBoundingClientRect();
-        var x = evt.clientX - dim.left;
-        var y = evt.clientY - dim.top;
-    }
+    var e = evt.target;
+    var dim = e.getBoundingClientRect();
+    var x = evt.clientX - dim.left;
+    var y = evt.clientY - dim.top;
 
     if(widget.centered){
         x = x - widget.width/2;

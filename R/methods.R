@@ -5,7 +5,7 @@
 #' @param ... Properties to be modified.
 #'
 #' @export
-updateProperty = function(rdog = NULL, elementId,...){
+update_property = function(rdog = NULL, elementId,...){
 
     changedParams = list(...)
 
@@ -116,7 +116,7 @@ copy = function(rdog = NULL, id = NULL, what, ...){
 #' @param ... Properties to be modified.
 #'
 #' @export
-copyGraph = function(rdog = NULL, id, what, ...){
+copy_graph = function(rdog = NULL, id, what, ...){
     changedParams = list(...)
 
     if(is.null(id)){
@@ -170,7 +170,7 @@ copyGraph = function(rdog = NULL, id, what, ...){
 
 #' Add child item
 #' @export
-addChild = function(rdog = NULL, to, what){
+add_child = function(rdog = NULL, to, what){
     assertthat::assert_that(assertthat::is.string(what))
     assertthat::assert_that(assertthat::is.string(to))
 
@@ -200,7 +200,7 @@ addChild = function(rdog = NULL, to, what){
 
 #' Remove child item
 #' @export
-removeChild = function(rdog = NULL, from, what){
+remove_child = function(rdog = NULL, from, what){
     assertthat::assert_that(assertthat::is.string(what))
     assertthat::assert_that(assertthat::is.string(from))
 
