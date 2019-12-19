@@ -412,6 +412,46 @@ rdog %>%
 
 ![](man/figures/elmat.gif)
 
+An alternative way relies on an external utility:
+[hmm](https://github.com/fogleman/hmm) to generate stl files from
+heightmaps with relatively low number of triangles.
+
+``` r
+# get the elevation data
+loadzip = tempfile()
+download.file("https://tylermw.com/data/dem_01.tif.zip", loadzip)
+localtif = raster::raster(unzip(loadzip, "dem_01.tif"))
+unlink(loadzip)
+
+#And convert it to a matrix:
+elmat = matrix(raster::extract(localtif, raster::extent(localtif), buffer = 1000),
+               nrow = ncol(localtif), ncol = nrow(localtif))
+
+# create a png file to use with hmm
+heightmap = tempfile(fileext = '.png')
+elmat %>% scale_to_int(0,1) %>% 
+    OpenImageR::writeImage(heightmap)
+
+stl = tempfile(fileext = '.stl')
+
+# use hmm to convert the heightmap to stl
+system(glue::glue('hmm {heightmap} {stl} -z 400 -t 1500'))
+
+stl_bounds = get_stl_bounds(stl)
+
+# use objectOffset to center the variable
+illustration(width = 400,height = 400,displayType = 'canvas',scale = 2,
+             rotate = c( y= tau/8, x = -tau/10)
+             ) %>%
+    stl_to_shape(stl = stl,colorAxis = 'z',colorMode = 'extreme',colorMin = 'gray90',colorMax = 'black',
+                 objectOffset = center_stl(stl_bounds),
+                 stroke = 1,scale = .27, rotate = c(x = tau/4)) %>% 
+    animation_rotate(rotate = c(y = .01)) %>% 
+    record_gif(duration = 12)
+```
+
+![](man/figures/elmatPoly.gif)
+
 ## Use in shiny
 
 rdog functions return a shiny widget which can be used in shiny
